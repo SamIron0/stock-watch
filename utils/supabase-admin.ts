@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 import { stripe } from './stripe';
 import { toDateTime } from './helpers';
 
-import { Customer, UserDetails, Price, Product } from 'types';
+import { Customer, UserDetails, Price } from 'types';
 import type { Database } from 'types_db';
 
 // Note: supabaseAdmin uses the SERVICE_ROLE_KEY which you must only use in a secure server-side context
@@ -14,20 +14,6 @@ const supabaseAdmin = createClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
-const upsertProductRecord = async (product: Stripe.Product) => {
-  const productData: Product = {
-    id: product.id,
-    active: product.active,
-    name: product.name,
-    description: product.description ?? undefined,
-    image: product.images?.[0] ?? null,
-    metadata: product.metadata
-  };
-
-  const { error } = await supabaseAdmin.from('products').upsert([productData]);
-  if (error) throw error;
-  console.log(`Product inserted/updated: ${product.id}`);
-};
 
 const upsertPriceRecord = async (price: Stripe.Price) => {
   const priceData: Price = {
@@ -178,7 +164,6 @@ const manageSubscriptionStatusChange = async (
 };
 
 export {
-  upsertProductRecord,
   upsertPriceRecord,
   createOrRetrieveCustomer,
   manageSubscriptionStatusChange
