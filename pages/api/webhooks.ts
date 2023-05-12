@@ -4,7 +4,6 @@ import { Readable } from 'node:stream';
 
 import { stripe } from '@/utils/stripe';
 import {
-  upsertProductRecord,
   upsertPriceRecord,
   manageSubscriptionStatusChange
 } from '@/utils/supabase-admin';
@@ -56,9 +55,6 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       try {
         switch (event.type) {
           case 'product.created':
-          case 'product.updated':
-            await upsertProductRecord(event.data.object as Stripe.Product);
-            break;
           case 'price.created':
           case 'price.updated':
             await upsertPriceRecord(event.data.object as Stripe.Price);
