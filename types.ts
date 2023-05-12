@@ -10,17 +10,12 @@ export interface Customer {
   stripe_customer_id?: string;
 }
 
-export interface Product {
+export interface Bot {
   id: string /* primary key */;
   active?: boolean;
   name?: string;
   description?: string;
-  image?: string;
-  metadata?: Stripe.Metadata;
-}
-
-export interface ProductWithPrice extends Product {
-  prices?: Price[];
+  Net?: string;
 }
 
 export interface UserDetails {
@@ -45,7 +40,6 @@ export interface Price {
   interval_count?: number;
   trial_period_days?: number | null;
   metadata?: Stripe.Metadata;
-  products?: Product;
 }
 
 export interface PriceWithProduct extends Price {}
