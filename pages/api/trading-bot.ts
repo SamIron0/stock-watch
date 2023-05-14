@@ -4,7 +4,7 @@ const handler: NextApiHandler = async (req, res) => {
   if (req.method === 'GET') {
     const bot = {
       name: 'genie',
-      price: Math.random() * 100
+      price: 0
     };
     res.status(200).json(bot);
   } else {
