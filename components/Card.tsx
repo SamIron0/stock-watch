@@ -74,7 +74,58 @@ const Card = () => {
               >
                 <div className="text-xl mt-8 mb-4 font-semibold">
                   <h2>Average price: {stockData.price}</h2>
-                  <p>Holdings: </p> 
+
+                </div>
+                
+              </PlanCard>
+
+              <PlanCard
+                title="BBIG"
+                price={
+                  stockData.price
+                }
+                footer={
+                  <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
+                    P/L: N/A
+                  </div>
+                }
+              >
+                <div className="text-xl mt-8 mb-4 font-semibold">
+                  <h2>Average price: {stockData.price}</h2>
+
+                </div>
+                
+              </PlanCard>
+              <PlanCard
+                title="BBIG"
+                price={
+                  stockData.price
+                }
+                footer={
+                  <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
+                    P/L: N/A
+                  </div>
+                }
+              >
+                <div className="text-xl mt-8 mb-4 font-semibold">
+                  <h2>Average price: {stockData.price}</h2>
+
+                </div>
+                
+              </PlanCard>
+              <PlanCard
+                title="BBIG"
+                price={
+                  stockData.price
+                }
+                footer={
+                  <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
+                    P/L: N/A
+                  </div>
+                }
+              >
+                <div className="text-xl mt-8 mb-4 font-semibold">
+                  <h2>Average price: {stockData.price}</h2>
 
                 </div>
                 
