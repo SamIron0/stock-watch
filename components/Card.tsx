@@ -73,10 +73,10 @@ const Card = () => {
                 }
               >
                 <div className="text-xl mt-8 mb-4 font-semibold">
-                  <h2>Avg price: {stockData.price}</h2>
+                  <p>Avg price: {stockData.price}</p>
 
                 </div>
-                
+
               </PlanCard>
 
               <PlanCard
@@ -91,10 +91,10 @@ const Card = () => {
                 }
               >
                 <div className="text-xl mt-8 mb-4 font-semibold">
-                  <h2>Average price: {stockData.price}</h2>
+                  <p>Avg price: {stockData.price}</p>
 
                 </div>
-                
+
               </PlanCard>
               <PlanCard
                 title="BBIG"
@@ -108,10 +108,10 @@ const Card = () => {
                 }
               >
                 <div className="text-xl mt-8 mb-4 font-semibold">
-                  <h2>Average price: {stockData.price}</h2>
+                  <p>Avg price: {stockData.price}</p>
 
                 </div>
-                
+
               </PlanCard>
               <PlanCard
                 title="BBIG"
@@ -125,10 +125,10 @@ const Card = () => {
                 }
               >
                 <div className="text-xl mt-8 mb-4 font-semibold">
-                  <h2>Average price: {stockData.price}</h2>
+                  <p>Avg price: {stockData.price}</p>
 
                 </div>
-                
+
               </PlanCard>
             </div>
           </div>
