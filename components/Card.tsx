@@ -18,9 +18,8 @@ function PlanCard({ title, price, footer, children }: Props) {
       <div className="px-5 py-4">
         <div className="flex justify-between">
           <p className="text-left">TICKER:{title}</p>
-          <p className="text-right">PRICE: </p>
+          <p className="text-right">PRICE:{price}</p>
         </div>
-        <p className="text-zinc-300">{price}</p>
         {children}
       </div>
       <div className="border-t border-zinc-700 bg-zinc-900 p-4 text-zinc-500 rounded-b-md">
@@ -74,15 +73,11 @@ const Card = () => {
                 }
               >
                 <div className="text-xl mt-8 mb-4 font-semibold">
-                  <h2>Average price: {stockData.name}</h2>
+                  <h2>Average price: {stockData.price}</h2>
                   <p>Holdings: </p> 
 
                 </div>
-                <div className="flex justify-between">
-                  <p className="text-left">TICKER:</p>
-                  <p className="text-right">PRICE: </p>
-                </div>
-
+                
               </PlanCard>
             </div>
           </div>
