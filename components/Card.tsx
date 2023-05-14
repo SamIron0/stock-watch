@@ -17,8 +17,8 @@ function PlanCard({ title, price, footer, children }: Props) {
     <div className="border border-zinc-700	max-w-3xl w-full p rounded-md m-auto my-8">
       <div className="px-5 py-4">
         <div className="flex justify-between">
-          <p className="text-left">TICKER:{title}</p>
-          <p className="text-right">PRICE:{price}</p>
+          <p className="text-left">{title}</p>
+          <p className="text-right">{price}</p>
         </div>
         {children}
       </div>
@@ -73,7 +73,7 @@ const Card = () => {
                 }
               >
                 <div className="text-xl mt-8 mb-4 font-semibold">
-                  <h2>Average price: {stockData.price}</h2>
+                  <h2>Avg price: {stockData.price}</h2>
 
                 </div>
                 
