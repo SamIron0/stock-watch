@@ -7,17 +7,20 @@ type StockData = {
 
 interface Props {
   title: string;
-  description?: string;
+  price?: number;
   footer?: ReactNode;
   children: ReactNode;
 }
 
-function PlanCard({ title, description, footer, children }: Props) {
+function PlanCard({ title, price, footer, children }: Props) {
   return (
     <div className="border border-zinc-700	max-w-3xl w-full p rounded-md m-auto my-8">
       <div className="px-5 py-4">
-        <h3 className="text-2xl mb-1 font-medium">{title}</h3>
-        <p className="text-zinc-300">{description}</p>
+        <div className="flex justify-between">
+          <p className="text-left">TICKER:{title}</p>
+          <p className="text-right">PRICE: </p>
+        </div>
+        <p className="text-zinc-300">{price}</p>
         {children}
       </div>
       <div className="border-t border-zinc-700 bg-zinc-900 p-4 text-zinc-500 rounded-b-md">
@@ -55,13 +58,14 @@ const Card = () => {
 
       <div className="sm:flex px-4 sm:flex-col sm:align-center">
         <div className="border border-zinc-700	max-w-3xl w-full rounded-md m-auto my-4">
+          HOLDINGS
           <div className="px-5">
             <div className="flex overflow-x-scroll space-x-4">
 
               <PlanCard
-                title="Genie"
-                description={
-                  ''
+                title="BBIG"
+                price={
+                  stockData.price
                 }
                 footer={
                   <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
@@ -70,10 +74,15 @@ const Card = () => {
                 }
               >
                 <div className="text-xl mt-8 mb-4 font-semibold">
-                  <h2>Model: {stockData.name}</h2>
-                  <p>Price: {stockData.price}</p>
+                  <h2>Average price: {stockData.name}</h2>
+                  <p>Holdings: </p> 
 
                 </div>
+                <div className="flex justify-between">
+                  <p className="text-left">TICKER:</p>
+                  <p className="text-right">PRICE: </p>
+                </div>
+
               </PlanCard>
             </div>
           </div>
