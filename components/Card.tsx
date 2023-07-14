@@ -10,8 +10,9 @@ interface Props {
   price?: number;
   footer?: ReactNode;
   children: ReactNode;
-}
+} 
 
+ 
 function PlanCard({ title, price, footer, children }: Props) {
   return (
     <div className="border border-zinc-700	max-w-3xl w-full p rounded-md m-auto my-8">
