@@ -17,7 +17,12 @@ function PlanCard({ title, price, footer, children }: Props) {
     <div className="border border-zinc-700	max-w-3xl w-full p rounded-md m-auto my-8">
       <div className="px-5 py-4">
         <div className="flex justify-between">
-          <p className="text-left">{title}</p>
+          <p className="text-left">
+            <input
+              type="text"
+              className="bg-gray-700 rounded-full py-2 px-4 text-gray-200 w-full focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            />
+          </p>
           <p className="text-right">{price}</p>
         </div>
         {children}
