@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactNode } from 'react';
+import React, { useState, useEffect, ReactNode } from 'react';
 
 type StockData = {
   name: string,
@@ -41,12 +41,14 @@ const Card = () => {
     const interval = setInterval(fetchStockData, 1000);
     return () => clearInterval(interval);
   }, []);
+  const [inputValue, setInputValue] = useState("");
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  }
   return (
+
     <section>
-
-
-
       <div className="sm:flex px-4 sm:flex-col sm:align-center">
         <div className="border border-zinc-700	max-w-3xl w-full p rounded-md m-auto">
           <div className="px-5">
@@ -62,21 +64,28 @@ const Card = () => {
             <div className="flex overflow-x-scroll space-x-4">
 
               <PlanCard
-                title="BBIG"
+                title={<input
+                  type="text"
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  className="px-4 py-2 border border-gray-300 bg-transparent"
+                  placeholder="Enter text"
+                />
+                }
                 price={
                   stockData.price
                 }
                 footer={
                   <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
                     <button
-                       className="group rounded-full px-4 py-2 text-[13px] font-semibold transition-all flex items-center justify-center bg-[#1E2B3A] text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
-                       style={{
-                         boxShadow:
-                           "0px 1px 4px rgba(13, 34, 71, 0.17), inset 0px 0px 0px 1px #061530, inset 0px 0px 0px 2px rgba(255, 255, 255, 0.1)",
-                       }}
-                     >
-                       BUY
-                     </button>
+                      className="group rounded-full px-4 py-2 text-[13px] font-semibold transition-all flex items-center justify-center bg-[#1E2B3A] text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
+                      style={{
+                        boxShadow:
+                          "0px 1px 4px rgba(13, 34, 71, 0.17), inset 0px 0px 0px 1px #061530, inset 0px 0px 0px 2px rgba(255, 255, 255, 0.1)",
+                      }}
+                    >
+                      BUY
+                    </button>
                   </div>
                 }
               >
