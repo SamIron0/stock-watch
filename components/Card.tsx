@@ -6,7 +6,7 @@ type StockData = {
 };
 
 interface Props {
-  title: string;
+  title: ReactNode;
   price?: number;
   footer?: ReactNode;
   children: ReactNode;
@@ -72,9 +72,7 @@ const Card = () => {
                   placeholder="Enter text"
                 />
                 }
-                price={
-                  stockData.price
-                }
+
                 footer={
                   <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
                     <button
@@ -90,6 +88,7 @@ const Card = () => {
                 }
               >
                 <div className="text-xl mt-8 mb-4 font-semibold">
+                  <p>price={stockData.price }</p>
                   <p>Avg price: {stockData.price}</p>
 
                 </div>
