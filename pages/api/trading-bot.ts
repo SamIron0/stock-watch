@@ -6,6 +6,30 @@ const handler: NextApiHandler = async (req, res) => {
       name: 'genie',
       price: 0
     };
+
+    //-------------
+      const url = 'https://twelve-data1.p.rapidapi.com/stocks?exchange=NASDAQ&symbol=BBIG&format=json';
+      const options = {
+        method: 'GET',
+        headers: {
+          'X-RapidAPI-Key': 'aad3954e92msh13ae07c9734257bp1725a7jsn2f503331eeca',
+          'X-RapidAPI-Host': 'twelve-data1.p.rapidapi.com'
+        }
+      };
+      
+      try {
+        const response = await fetch(url, options);
+        const result = await response.text();
+        console.log(result);
+      } catch (error) {
+        console.error(error);
+      }
+
+
+      //-------------
+
+
+    }
     res.status(200).json(bot);
   } else {
     res.status(405).json({ message: 'Method Not Allowed' });
