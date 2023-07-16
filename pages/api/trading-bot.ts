@@ -7,13 +7,13 @@ const handler: NextApiHandler = async (req, res) => {
       price: 0
     };
     //-------------
-    const ticker = 'BBIG';
+    const ticker = 'AMZN';
     const url = 'https://twelve-data1.p.rapidapi.com/price?symbol=AMZN&format=json&outputsize=30';
     const options = {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': 'aad3954e92msh13ae07c9734257bp1725a7jsn2f503331eeca',
-        'X-RapidAPI-Host': 'twelve-data1.p.rapidapi.com'
+        'X-RapidAPI-Key': 'XRapidAPIKey',
+        'X-RapidAPI-Host': 'XRapidAPIHost'
       }
     };
 
