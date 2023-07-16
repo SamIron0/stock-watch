@@ -12,8 +12,8 @@ const handler: NextApiHandler = async (req, res) => {
     const options = {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': process.env.XRapidAPIKey,
-        'X-RapidAPI-Host': process.env.XRapidAPIHTMLOListElement
+        'X-RapidAPI-Key': 'process.env.XRapidAPIKey',
+        'X-RapidAPI-Host': 'process.env.XRapidAPIHTMLOListElement'
       }
     };
 
