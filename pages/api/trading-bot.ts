@@ -2,13 +2,14 @@ import { NextApiHandler } from 'next';
 
 const handler: NextApiHandler = async (req, res) => {
   if (req.method === 'GET') {
+    const { ticker } = req.query;
+
     const bot = {
       name: 'genie',
       price: 0
     };
     //-------------
-    const ticker = 'AMZN';
-    const url = 'https://twelve-data1.p.rapidapi.com/price?symbol=AMZN&format=json&outputsize=30';
+    const url = 'https://twelve-data1.p.rapidapi.com/price?symbol=${ticker}&format=json&outputsize=30';
     const options = {
       method: 'GET',
       headers: {
