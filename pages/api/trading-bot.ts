@@ -8,23 +8,23 @@ const handler: NextApiHandler = async (req, res) => {
     };
     //-------------
     const ticker = 'BBIG';
-    const url = 'https://twelve-data1.p.rapidapi.com/stocks?exchange=NASDAQ&symbol=BBIG&format=json';
+    const url = 'https://twelve-data1.p.rapidapi.com/price?symbol=AMZN&format=json&outputsize=30';
     const options = {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': 'aad3954e92msh13ae07c9734257bp1725a7jsn2f503331eeca',
-        'X-RapidAPI-Host': 'twelve-data1.p.rapidapi.com'
+        'X-RapidAPI-Key': process.env.X-RapidAPI-Key;
+        'X-RapidAPI-Host': process.env.X-RapidAPI-HTMLOListElement;
       }
     };
 
     try {
+      
       const response = await fetch(url, options);
       const result = await response.text();
-      console.log(result);
       const bot2 = {
         name: ticker,
         price: result
-      }
+      };
       res.status(200).json(bot2);
 
     } catch (error) {
