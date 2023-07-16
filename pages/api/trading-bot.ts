@@ -12,8 +12,8 @@ const handler: NextApiHandler = async (req, res) => {
     const options = {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': 'XRapidAPIKey',
-        'X-RapidAPI-Host': 'XRapidAPIHost'
+        'X-RapidAPI-Key': 'aad3954e92msh13ae07c9734257bp1725a7jsn2f503331eeca',
+        'X-RapidAPI-Host': 'twelve-data1.p.rapidapi.com'
       }
     };
 
