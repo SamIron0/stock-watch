@@ -7,6 +7,7 @@ const handler: NextApiHandler = async (req, res) => {
       price: 0
     };
     //-------------
+    const ticker = 'BBIG';
     const url = 'https://twelve-data1.p.rapidapi.com/stocks?exchange=NASDAQ&symbol=BBIG&format=json';
     const options = {
       method: 'GET',
@@ -21,7 +22,7 @@ const handler: NextApiHandler = async (req, res) => {
       const result = await response.text();
       console.log(result);
       const bot2 = {
-        name: 'ticker',
+        name: ticker,
         price: result
       }
       res.status(200).json(bot2);
