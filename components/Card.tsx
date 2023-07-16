@@ -31,16 +31,16 @@ function PlanCard({ title, price, footer, children }: Props) {
 const Card = () => {
   const [stockData, setStockData] = useState<StockData>({ name: '', price: 0 });
 
-  useEffect(() => {
+  async function setStockPrice() {
     const fetchStockData = async () => {
       const response = await fetch('/api/trading-bot');
       const data = await response.json();
       setStockData(data);
     };
 
-    const interval = setInterval(fetchStockData, 1000);
+    const interval = setInterval(fetchStockData, 10000);
     return () => clearInterval(interval);
-  }, []);
+  };
   const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +77,7 @@ const Card = () => {
                 footer={
                   <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
                     <button
+                    onClick={setStockPrice}
                       className="group rounded-full px-4 py-2 text-[13px] font-semibold transition-all flex items-center justify-center bg-[#1E2B3A] text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
                       style={{
                         boxShadow:
@@ -114,7 +115,7 @@ const Card = () => {
               <PlanCard
                 title="BBIG"
                 price={
-0                }
+                  0}
                 footer={
                   <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
                     P/L: N/A
@@ -129,7 +130,7 @@ const Card = () => {
               <PlanCard
                 title="BBIG"
                 price={
-0                }
+                  0}
                 footer={
                   <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
                     P/L: N/A
