@@ -12,13 +12,12 @@ const handler: NextApiHandler = async (req, res) => {
     const options = {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': 'process.env.XRapidAPIKey',
-        'X-RapidAPI-Host': 'process.env.XRapidAPIHTMLOListElement'
+        'X-RapidAPI-Key': 'aad3954e92msh13ae07c9734257bp1725a7jsn2f503331eeca',
+        'X-RapidAPI-Host': 'twelve-data1.p.rapidapi.com'
       }
     };
 
     try {
-      
       const response = await fetch(url, options);
       const result = await response.text();
       const bot2 = {
@@ -26,10 +25,10 @@ const handler: NextApiHandler = async (req, res) => {
         price: result
       };
       res.status(200).json(bot2);
-
     } catch (error) {
       console.error(error);
     }
+
 
 
 
