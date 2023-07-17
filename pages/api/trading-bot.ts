@@ -15,7 +15,7 @@ const handler: NextApiHandler = async (req, res) => {
       ws.onopen = () => {
         console.log('connected');
         ws.send(JSON.stringify({
-          subscribe: [ticker]
+          subscribe: ['DOGE-USD']
         }));
       };
 
@@ -23,7 +23,7 @@ const handler: NextApiHandler = async (req, res) => {
         console.log('disconnected');
       };
 
-      ws.onmessage = (data: WebSocket.MessageEvent) => {
+      ws.onmessage = (data: any) => {
         console.log('incoming message');
         const message: any = Yaticker.decode(Buffer.from(data.data as string, 'base64'));
         //console.log(Yaticker.decode(Buffer.from(data.data as string, 'base64')));
@@ -31,6 +31,7 @@ const handler: NextApiHandler = async (req, res) => {
           name: ticker,
           price: message.price
         };
+        console.log(message);
         res.status(200).json(bot2);
       };
 
@@ -38,9 +39,6 @@ const handler: NextApiHandler = async (req, res) => {
     } catch (error) {
       console.error(error);
     }
-
-
-
 
     //-------------
 

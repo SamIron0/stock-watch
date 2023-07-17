@@ -33,13 +33,17 @@ const Card = () => {
 
   async function setStockPrice() {
     const fetchStockData = async () => {
-      const response = await fetch('/api/trading-bot');
-      const data = await response.json();
-      setStockData(data);
+      try {
+        const response = await fetch('/api/trading-bot');
+        const data = await response.json();
+        setStockData(data);
+        fetchStockData();
+      } catch (err: any) {
+          console.log(err);
+      }
     };
 
-    const interval = setInterval(fetchStockData, 10000);
-    return () => clearInterval(interval);
+    fetchStockData();
   };
   const [inputValue, setInputValue] = useState("");
 
@@ -77,7 +81,7 @@ const Card = () => {
                 footer={
                   <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
                     <button
-                    onClick={setStockPrice}
+                      onClick={setStockPrice}
                       className="group rounded-full px-4 py-2 text-[13px] font-semibold transition-all flex items-center justify-center bg-[#1E2B3A] text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
                       style={{
                         boxShadow:
