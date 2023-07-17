@@ -1,31 +1,39 @@
 import { NextApiHandler } from 'next';
 
+import WebSocket from 'isomorphic-ws';
+import protobuf from 'protobufjs';
+
 const handler: NextApiHandler = async (req, res) => {
   if (req.method === 'GET') {
     const { ticker } = req.query;
-
-    const bot = {
-      name: 'genie',
-      price: 0
-    };
-    //-------------
-    const url = 'https://twelve-data1.p.rapidapi.com/price?symbol=${ticker}&format=json&outputsize=30';
-    const options = {
-      method: 'GET',
-      headers: {
-        'X-RapidAPI-Key': 'aad3954e92msh13ae07c9734257bp1725a7jsn2f503331eeca',
-        'X-RapidAPI-Host': 'twelve-data1.p.rapidapi.com'
-      }
-    };
-
     try {
-      const response = await fetch(url, options);
-      const result = await response.text();
-      const bot2 = {
-        name: ticker,
-        price: result
+      const root = protobuf.loadSync('./YPricingData.proto');
+      const Yaticker = root.lookupType("yaticker");
+
+      const ws = new WebSocket('wss://streamer.finance.yahoo.com');
+
+      ws.onopen = () => {
+        console.log('connected');
+        ws.send(JSON.stringify({
+          subscribe: [ticker]
+        }));
       };
-      res.status(200).json(bot2);
+
+      ws.onclose = () => {
+        console.log('disconnected');
+      };
+
+      ws.onmessage = (data: WebSocket.MessageEvent) => {
+        console.log('incoming message');
+        //console.log(Yaticker.decode(Buffer.from(data.data as string, 'base64')));
+        const bot2 = {
+          name: ticker,
+          price: Yaticker.decode(Buffer.from(data.data as string, 'base64')).price
+        };
+        res.status(200).json(bot2);
+      };
+
+
     } catch (error) {
       console.error(error);
     }
