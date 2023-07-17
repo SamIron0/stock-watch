@@ -25,10 +25,11 @@ const handler: NextApiHandler = async (req, res) => {
 
       ws.onmessage = (data: WebSocket.MessageEvent) => {
         console.log('incoming message');
+        const message = Yaticker.decode(Buffer.from(data.data as string, 'base64'));
         //console.log(Yaticker.decode(Buffer.from(data.data as string, 'base64')));
         const bot2 = {
           name: ticker,
-          price: Yaticker.decode(Buffer.from(data.data as string, 'base64')).price
+          price: message.price
         };
         res.status(200).json(bot2);
       };
