@@ -15,7 +15,7 @@ const handler: NextApiHandler = async (req, res) => {
       ws.onopen = () => {
         console.log('connected');
         ws.send(JSON.stringify({
-          subscribe: ['DOGE-USD']
+          subscribe: ['TSLA']
         }));
       };
 
