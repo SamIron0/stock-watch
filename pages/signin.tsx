@@ -13,6 +13,7 @@ const SignIn = () => {
   const user = useUser();
   const supabaseClient = useSupabaseClient();
 
+  
   useEffect(() => {
     if (user) {
       router.replace('/account');
