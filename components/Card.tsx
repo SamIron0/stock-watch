@@ -44,8 +44,7 @@ const Card = () => {
         console.log(`Name: ${data.name}, Price: ${data.price}`);
       })
       .catch(error => console.error(`Error: ${error}`));
-  }, []);
-
+    }, []);
   const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
