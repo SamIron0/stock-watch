@@ -24,15 +24,18 @@ const handler: NextApiHandler = async (req, res) => {
       };
 
       ws.onmessage = (data: any) => {
-        console.log('incoming message');
-        const message: any = Yaticker.decode(Buffer.from(data.data as string, 'base64'));
-        //console.log(Yaticker.decode(Buffer.from(data.data as string, 'base64')));
-        const bot2 = {
-          name: ticker,
-          price: message.price
-        };
-        console.log(message);
-        res.status(200).json(bot2);
+        //console.log('incoming message');
+        if (!res.writableEnded) {
+
+          const message: any = Yaticker.decode(Buffer.from(data.data as string, 'base64'));
+          //console.log(Yaticker.decode(Buffer.from(data.data as string, 'base64')));
+          const bot2 = {
+            name: ticker,
+            price: message.price.toFixed(4)
+          };
+          //console.log(message);
+          res.status(200).json(bot2);
+        }
       };
 
 

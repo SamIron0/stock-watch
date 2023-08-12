@@ -1,8 +1,10 @@
-import React, { useState, useEffect, ReactNode } from 'react';
+import protobuf from 'protobufjs';
+import React, { useMemo, useState, useEffect, ReactNode } from 'react';
+import axios from 'axios';
 
 type StockData = {
   name: string,
-  price: number
+  price: string
 };
 
 interface Props {
@@ -28,23 +30,22 @@ function PlanCard({ title, price, footer, children }: Props) {
     </div>
   );
 }
+
 const Card = () => {
-  const [stockData, setStockData] = useState<StockData>({ name: '', price: 0 });
+  const [ws, setWs] = useState<WebSocket>();
+  const [stockData, setStockData] = useState<StockData>({ name: '', price: '' });
+  //const [price, setPrice] = useState<StockData>({ name: '', price: 0 });
+  const ticker = "BTC-USD"
+  useEffect(() => {
+    console.log('here')
+    axios.get('https://solid-goldfish-xjw6vg449rw3gr6-3000.app.github.dev/api/price')
+      .then(response => {
+        const data = JSON.parse(response.data);
+        console.log(`Name: ${data.name}, Price: ${data.price}`);
+      })
+      .catch(error => console.error(`Error: ${error}`));
+  }, []);
 
-  async function setStockPrice() {
-    const fetchStockData = async () => {
-      try {
-        const response = await fetch('/api/trading-bot');
-        const data = await response.json();
-        setStockData(data);
-        fetchStockData();
-      } catch (err: any) {
-          console.log(err);
-      }
-    };
-
-    fetchStockData();
-  };
   const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +82,7 @@ const Card = () => {
                 footer={
                   <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
                     <button
-                      onClick={setStockPrice}
+                      onClick={() => setWs(new WebSocket('wss://streamer.finance.yahoo.com'))}
                       className="group rounded-full px-4 py-2 text-[13px] font-semibold transition-all flex items-center justify-center bg-[#1E2B3A] text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
                       style={{
                         boxShadow:
