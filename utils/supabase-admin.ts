@@ -14,6 +14,38 @@ const supabaseAdmin = createClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
+const upsertStockData= async ({
+  ticker,
+  price
+}: {
+  ticker: string;
+  price: string;
+}) => {
+   const { data, error } = await supabaseAdmin
+    .from('ticker')
+    .select('price')
+    .eq('id', ticker)
+    .single();
+  if (error ) {
+    // No customer record found, let's create one.
+    const customerData: { metadata: { supabaseUUID: string }; email?: string } =
+      {
+        metadata: {
+          supabaseUUID: uuid
+        }
+      };
+    if (email) customerData.email = email;
+    const customer = await stripe.customers.create(customerData);
+    // Now insert the customer ID into our Supabase mapping table.
+    const { error: supabaseError } = await supabaseAdmin
+      .from('customers')
+      .insert([{ id: uuid, stripe_customer_id: customer.id }]);
+    if (supabaseError) throw supabaseError;
+    console.log(`New customer created and inserted for ${uuid}.`);
+    return customer.id;
+  }
+  return data.stripe_customer_id;
+};
 
 const upsertPriceRecord = async (price: Stripe.Price) => {
   const priceData: Price = {
