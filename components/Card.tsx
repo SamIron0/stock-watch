@@ -16,11 +16,11 @@ interface Props {
 
 function PlanCard({ title, price, footer, children }: Props) {
   return (
-    <div className="border border-zinc-700	max-w-3xl w-full p rounded-md m-auto my-8">
+    <div className="border border-zinc-700	max-w-[500px] p rounded-md m-auto my-8">
       <div className="px-5 py-4">
         <div className="flex justify-between">
           <p className="text-left">{title}</p>
-          <p className="text-right">{price}</p>
+          <p className="text-right">$50</p>
         </div>
         {children}
       </div>
@@ -33,119 +33,234 @@ function PlanCard({ title, price, footer, children }: Props) {
 
 const Card = () => {
   const [ws, setWs] = useState<WebSocket>();
-  const [stockData, setStockData] = useState<StockData>({ name: '', price: '' });
-  //const [price, setPrice] = useState<StockData>({ name: '', price: 0 });
-  const ticker = "BTC-USD"
-  useEffect(() => {
-    console.log('here')
-    axios.get('https://solid-goldfish-xjw6vg449rw3gr6-3000.app.github.dev/api/price')
-      .then(response => {
-        const data = JSON.parse(response.data);
-        console.log(`Name: ${data.name}, Price: ${data.price}`);
-      })
-      .catch(error => console.error(`Error: ${error}`));
-    }, []);
-  const [inputValue, setInputValue] = useState("");
-
+  const [ticker, setTicker] = useState<string>("");  const [stockData, setStockData] = useState<StockData>({ name: '', price: '' });
+  const [inputValue, setInputValue] = useState("")
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   }
+
+  useEffect(() => {
+    const eventSource = new EventSource(`/api/bot/?stock=${ticker}`)
+    eventSource.onopen = (event) => console.log('connection opened', event);
+    eventSource.onerror = (event) => console.log('connection errored', event);
+
+    eventSource.onmessage = (event) => {
+      console.log('incoming message');
+
+      const data = JSON.parse(event.data);
+      console.log(data);
+      setStockData(data);
+    }
+    return () => eventSource.close();
+  }, [ticker]);
+
   return (
-
-
     <section>
-      <div className="sm:flex px-4 sm:flex-col sm:align-center">
-        <div className="border border-zinc-700	max-w-3xl w-full p rounded-md m-auto">
-          <div className="px-5">
-            <h3 className="text-xl my-1 font-medium">Hello Samuel</h3>
-          </div>
-        </div>
-      </div>
 
-      <div className="sm:flex px-4 sm:flex-col sm:align-center">
-        <div className="border border-zinc-700	max-w-3xl w-full rounded-md m-auto my-4">
-          HOLDINGS
-          <div className="px-5">
+
+      <div className="sm:flex px-4  sm:flex-col h-screen sm:align-center">
+        <div className="border border-zinc-700 w-full h-full rounded-md m-auto my-4">
+          <div className="px-2">
             <div className="flex overflow-x-scroll space-x-4">
-
               <PlanCard
                 title={<input
                   type="text"
                   value={inputValue}
                   onChange={handleInputChange}
-                  className="px-4 py-2 border border-gray-300 bg-transparent"
+                  className="px-1 py-1 border rounded-md border-gray-300 bg-transparent"
                   placeholder="Enter text"
                 />
                 }
 
                 footer={
-                  <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
+                  <div className="flex items-start justify-between  text-black flex-col sm:flex-row sm:items-center">
                     <button
-                      onClick={() => setWs(new WebSocket('wss://streamer.finance.yahoo.com'))}
-                      className="group rounded-full px-4 py-2 text-[13px] font-semibold transition-all flex items-center justify-center bg-[#1E2B3A] text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
-                      style={{
-                        boxShadow:
-                          "0px 1px 4px rgba(13, 34, 71, 0.17), inset 0px 0px 0px 1px #061530, inset 0px 0px 0px 2px rgba(255, 255, 255, 0.1)",
-                      }}
+                      onClick={() => setTicker(inputValue)}
+                      className="group rounded-full px-4 py-1 text-[13px]  font-semibold transition-all flex items-center justify-center bg-white text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
+
                     >
-                      BUY
+                      <p className="text-black"></p>ADD
                     </button>
                   </div>
                 }
               >
-                <div className="text-xl mt-8 mb-4 font-semibold">
-                  <p>price={stockData.price}</p>
+                <div className='w-[400px]'>
 
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex text-[16px] items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">Price</span>
+                    </div>
+                    <div className="flex  text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex   text-[16px] items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">Average price</span>
+                    </div>
+                    <div className="flex text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex  text-[16px] items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">% of trading account</span>
+                    </div>
+                    <div className="flex text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex text-[16px] items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">Today's return</span>
+                    </div>
+                    <div className="flex  text-[16px] text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex text-[16px] items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold ">Total Return</span>
+                    </div>
+                    <div className="flex  text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
                 </div>
-
               </PlanCard>
-
               <PlanCard
-                title="BBIG"
-                price={
-                  0
+                title={<input
+                  type="text"
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  className="px-1 py-1 border rounded-md border-gray-300 bg-transparent"
+                  placeholder="Enter text"
+                />
                 }
+
                 footer={
-                  <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
-                    P/L: N/A
+                  <div className="flex items-start justify-between  text-black flex-col sm:flex-row sm:items-center">
+                    <button
+                      onClick={() => setTicker(inputValue)}
+                      className="group rounded-full px-4 py-1 text-[13px]  font-semibold transition-all flex items-center justify-center bg-white text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
+
+                    >
+                      <p className="text-black"></p>ADD
+                    </button>
                   </div>
                 }
               >
-                <div className="text-xl mt-8 mb-4 font-semibold">
+                <div className='w-[400px]'>
 
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between text-[12px]">
+                    <div className="flex  items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">Price</span>
+                    </div>
+                    <div className="flex  text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex  items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">Average price</span>
+                    </div>
+                    <div className="flex text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">% of Non-registered account</span>
+                    </div>
+                    <div className="flex text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">Today's return</span>
+                    </div>
+                    <div className="flex text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">Total Return</span>
+                    </div>
+                    <div className="flex text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
                 </div>
-
               </PlanCard>
               <PlanCard
-                title="BBIG"
-                price={
-                  0}
+                title={<input
+                  type="text"
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  className="px-1 py-1 border rounded-md border-gray-300 bg-transparent"
+                  placeholder="Enter text"
+                />
+                }
+
                 footer={
-                  <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
-                    P/L: N/A
+                  <div className="flex items-start justify-between  text-black flex-col sm:flex-row sm:items-center">
+                    <button
+                      onClick={() => setTicker(inputValue)}
+                      className="group rounded-full px-4 py-1 text-[13px]  font-semibold transition-all flex items-center justify-center bg-white text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
+
+                    >
+                      <p className="text-black"></p>ADD
+                    </button>
                   </div>
                 }
               >
-                <div className="text-xl mt-8 mb-4 font-semibold">
+                <div className='w-[400px]'>
 
-                </div>
-
-              </PlanCard>
-              <PlanCard
-                title="BBIG"
-                price={
-                  0}
-                footer={
-                  <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
-                    P/L: N/A
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between text-[12px]">
+                    <div className="flex  items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">Price</span>
+                    </div>
+                    <div className="flex  text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
                   </div>
-                }
-              >
-                <div className="text-xl mt-8 mb-4 font-semibold">
-
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex  items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">Average price</span>
+                    </div>
+                    <div className="flex text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">% of Non-registered account</span>
+                    </div>
+                    <div className="flex text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">Today's return</span>
+                    </div>
+                    <div className="flex text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
+                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                    <div className="flex items-center"> {/* Aligns first word to the left */}
+                      <span className="font-bold">Total Return</span>
+                    </div>
+                    <div className="flex text-[15px] items-center"> {/* Aligns second word to the right */}
+                      <span className="">{stockData.price}</span>
+                    </div>
+                  </div>
                 </div>
-
               </PlanCard>
+
             </div>
           </div>
         </div>
