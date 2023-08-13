@@ -17,6 +17,11 @@ export interface Bot {
   description?: string;
   Net?: string;
 }
+export interface Stock {
+  id: string,
+  price_data?: string,
+  vwap_data?: string
+}
 
 export interface UserDetails {
   id: string /* primary key */;

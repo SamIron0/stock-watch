@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 import { stripe } from './stripe';
 import { toDateTime } from './helpers';
 
-import { Customer, UserDetails, Price } from 'types';
+import { Customer, UserDetails, Price, Stock } from 'types';
 import type { Database } from 'types_db';
 
 // Note: supabaseAdmin uses the SERVICE_ROLE_KEY which you must only use in a secure server-side context
@@ -14,38 +14,48 @@ const supabaseAdmin = createClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
-const upsertStockData= async ({
-  ticker,
-  price
-}: {
-  ticker: string;
-  price: string;
-}) => {
-   const { data, error } = await supabaseAdmin
-    .from('ticker')
-    .select('price')
-    .eq('id', ticker)
-    .single();
-  if (error ) {
-    // No customer record found, let's create one.
-    const customerData: { metadata: { supabaseUUID: string }; email?: string } =
-      {
-        metadata: {
-          supabaseUUID: uuid
-        }
-      };
-    if (email) customerData.email = email;
-    const customer = await stripe.customers.create(customerData);
-    // Now insert the customer ID into our Supabase mapping table.
-    const { error: supabaseError } = await supabaseAdmin
-      .from('customers')
-      .insert([{ id: uuid, stripe_customer_id: customer.id }]);
-    if (supabaseError) throw supabaseError;
-    console.log(`New customer created and inserted for ${uuid}.`);
-    return customer.id;
+async function createOrRetrieveStock(stock: Stock): Promise<Stock | null> {
+  // Attempt to retrieve the stock from the supabase
+  let { data, error } = await supabaseAdmin
+    .from('stock')
+    .select('*')
+    .eq('id', stock.id)
+    .single()
+
+  // If there's an error or no stock exist, insert the stock  
+  if (error || !data) {
+    let { error } = await supabaseAdmin
+      .from('stock')
+      .insert([{
+        id: stock.id,
+      }]);
+
+    //.insert(stock)
+    // If there was an error inserting the stock, return null
+    if (error) {
+      console.error('There was an error inserting the stock:', error)
+      return null
+    }
+
+    // If the insert was successful, select the inserted stock
+    let { data: insertedStock, error: fetchError } = await supabaseAdmin
+      .from('stock')
+      .select('*')
+      .eq('id', stock.id)
+      .single()
+
+    // If there was an error fetching the inserted stock, return null
+    if (fetchError || !insertedStock) {
+      console.error('There was an error fetching the inserted stock:', fetchError)
+      return null
+    }
+
+    // If everything went fine, return the inserted stock
+    return insertedStock
   }
-  return data.stripe_customer_id;
-};
+  // If the stock was already present in the database, return it
+  return data
+}
 
 const upsertPriceRecord = async (price: Stripe.Price) => {
   const priceData: Price = {
@@ -82,11 +92,11 @@ const createOrRetrieveCustomer = async ({
   if (error || !data?.stripe_customer_id) {
     // No customer record found, let's create one.
     const customerData: { metadata: { supabaseUUID: string }; email?: string } =
-      {
-        metadata: {
-          supabaseUUID: uuid
-        }
-      };
+    {
+      metadata: {
+        supabaseUUID: uuid
+      }
+    };
     if (email) customerData.email = email;
     const customer = await stripe.customers.create(customerData);
     // Now insert the customer ID into our Supabase mapping table.
@@ -143,39 +153,39 @@ const manageSubscriptionStatusChange = async (
   });
   // Upsert the latest status of the subscription object.
   const subscriptionData: Database['public']['Tables']['subscriptions']['Insert'] =
-    {
-      id: subscription.id,
-      user_id: uuid,
-      metadata: subscription.metadata,
-      status: subscription.status,
-      price_id: subscription.items.data[0].price.id,
-      //TODO check quantity on subscription
-      // @ts-ignore
-      quantity: subscription.quantity,
-      cancel_at_period_end: subscription.cancel_at_period_end,
-      cancel_at: subscription.cancel_at
-        ? toDateTime(subscription.cancel_at).toISOString()
-        : null,
-      canceled_at: subscription.canceled_at
-        ? toDateTime(subscription.canceled_at).toISOString()
-        : null,
-      current_period_start: toDateTime(
-        subscription.current_period_start
-      ).toISOString(),
-      current_period_end: toDateTime(
-        subscription.current_period_end
-      ).toISOString(),
-      created: toDateTime(subscription.created).toISOString(),
-      ended_at: subscription.ended_at
-        ? toDateTime(subscription.ended_at).toISOString()
-        : null,
-      trial_start: subscription.trial_start
-        ? toDateTime(subscription.trial_start).toISOString()
-        : null,
-      trial_end: subscription.trial_end
-        ? toDateTime(subscription.trial_end).toISOString()
-        : null
-    };
+  {
+    id: subscription.id,
+    user_id: uuid,
+    metadata: subscription.metadata,
+    status: subscription.status,
+    price_id: subscription.items.data[0].price.id,
+    //TODO check quantity on subscription
+    // @ts-ignore
+    quantity: subscription.quantity,
+    cancel_at_period_end: subscription.cancel_at_period_end,
+    cancel_at: subscription.cancel_at
+      ? toDateTime(subscription.cancel_at).toISOString()
+      : null,
+    canceled_at: subscription.canceled_at
+      ? toDateTime(subscription.canceled_at).toISOString()
+      : null,
+    current_period_start: toDateTime(
+      subscription.current_period_start
+    ).toISOString(),
+    current_period_end: toDateTime(
+      subscription.current_period_end
+    ).toISOString(),
+    created: toDateTime(subscription.created).toISOString(),
+    ended_at: subscription.ended_at
+      ? toDateTime(subscription.ended_at).toISOString()
+      : null,
+    trial_start: subscription.trial_start
+      ? toDateTime(subscription.trial_start).toISOString()
+      : null,
+    trial_end: subscription.trial_end
+      ? toDateTime(subscription.trial_end).toISOString()
+      : null
+  };
 
   const { error } = await supabaseAdmin
     .from('subscriptions')

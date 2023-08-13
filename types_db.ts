@@ -48,6 +48,23 @@ export interface Database {
           stripe_customer_id?: string | null;
         };
       };
+      stock: {
+        Row: {
+          id: string;
+          price_data?: string;
+          vwap_data?: string;
+        };
+        Insert: {
+          id: string;
+          price_data?: string;
+          vwap_data?: string;
+        };
+        Update: {
+          id: string;
+          price_data?: string;
+          vwap_data?: string;
+        };
+      };
       prices: {
         Row: {
           active: boolean | null;
