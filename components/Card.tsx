@@ -33,8 +33,9 @@ function PlanCard({ title, price, footer, children }: Props) {
 
 const Card = () => {
   const [ws, setWs] = useState<WebSocket>();
-  const [ticker, setTicker] = useState<string>("");  const [stockData, setStockData] = useState<StockData>({ name: '', price: '' });
+  const [ticker, setTicker] = useState<string>(""); const [stockData, setStockData] = useState<StockData>({ name: '', price: '' });
   const [inputValue, setInputValue] = useState("")
+  const [news, setN] = useState("")
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   }
@@ -264,7 +265,12 @@ const Card = () => {
             </div>
           </div>
         </div>
+        <div className="border border-zinc-700	w-full p rounded-md m-auto my-8">
+          {news}
+        </div>
       </div>
+
+
     </section>
   );
 };
