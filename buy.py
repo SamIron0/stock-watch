@@ -24,24 +24,23 @@ else:
 
     handler.add_indicators(["VWAP"])
 
-   # print(handler.get_analysis().indicators["open"])
+    # print(handler.get_analysis().indicators["open"])
     print(handler.get_analysis().indicators["VWAP"])
 
 
+# args_array = sys.argv[1:-1]  # Array arguments
+ticker = sys.argv[-1]  # Last argument is ticker
 
-args_array = sys.argv[1:-1]  # Array arguments
-number_arg = int(sys.argv[-1])  # Last argument as a number
-
-print("Array arguments:", args_array)
-print("Number argument:", number_arg)
+#print("Array arguments:", args_array)
+#print("Number argument:", number_arg)
 
 
-    # before buying, check first candle to break new high
-    # bonus if it breaks major resistance spot
-    # consider whole dollars as maor points
-    #
-    # check the high of previous candle
+# before buying, check first candle to break new high
+# bonus if it breaks major resistance spot
+# consider whole dollars as maor points
+#
+# check the high of previous candle
 
-    # If we've broken through the high, keep going else loop back
+# If we've broken through the high, keep going else loop back
 
-    # use a trailing sl, so if price goes up 5%, move stop loss up 5%
+# use a trailing sl, so if price goes up 5%, move stop loss up 5%

@@ -16,7 +16,7 @@ interface Props {
 
 function PlanCard({ title, price, footer, children }: Props) {
   return (
-    <div className="border border-zinc-700	max-w-[500px] p rounded-md m-auto my-8">
+    <div className="border border-zinc-700	max-w-[500px] p rounded-md m-auto">
       <div className="px-5 py-4">
         <div className="flex justify-between">
           <p className="text-left">{title}</p>
@@ -35,7 +35,7 @@ const Card = () => {
   const [ws, setWs] = useState<WebSocket>();
   const [ticker, setTicker] = useState<string>(""); const [stockData, setStockData] = useState<StockData>({ name: '', price: '' });
   const [inputValue, setInputValue] = useState("")
-  const [news, setN] = useState("")
+  const [news, setNews] = useState("")
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   }
@@ -57,10 +57,8 @@ const Card = () => {
 
   return (
     <section>
-
-
       <div className="sm:flex px-4  sm:flex-col h-screen sm:align-center">
-        <div className="border border-zinc-700 w-full h-full rounded-md m-auto my-4">
+        <div className="border border-zinc-700 w-full h-full rounded-md m-auto my-1">
           <div className="px-2">
             <div className="flex overflow-x-scroll space-x-4">
               <PlanCard
@@ -87,7 +85,7 @@ const Card = () => {
               >
                 <div className='w-[400px]'>
 
-                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                  <div className="text-xl mt-6 h-xl mb-4 flex justify-between ">
                     <div className="flex text-[16px] items-center"> {/* Aligns first word to the left */}
                       <span className="font-bold">Price</span>
                     </div>
@@ -95,7 +93,7 @@ const Card = () => {
                       <span className="">{stockData.price}</span>
                     </div>
                   </div>
-                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                  <div className="text-xl  h-xl mb-4 flex justify-between ">
                     <div className="flex   text-[16px] items-center"> {/* Aligns first word to the left */}
                       <span className="font-bold">Average price</span>
                     </div>
@@ -103,7 +101,7 @@ const Card = () => {
                       <span className="">{stockData.price}</span>
                     </div>
                   </div>
-                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                  <div className="text-xl h-md h-xl mb-4 flex justify-between ">
                     <div className="flex  text-[16px] items-center"> {/* Aligns first word to the left */}
                       <span className="font-bold">% of trading account</span>
                     </div>
@@ -111,7 +109,7 @@ const Card = () => {
                       <span className="">{stockData.price}</span>
                     </div>
                   </div>
-                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                  <div className="text-xl h-md mb-4 flex justify-between ">
                     <div className="flex text-[16px] items-center"> {/* Aligns first word to the left */}
                       <span className="font-bold">Today's return</span>
                     </div>
@@ -119,7 +117,7 @@ const Card = () => {
                       <span className="">{stockData.price}</span>
                     </div>
                   </div>
-                  <div className="text-xl mt-8 h-xl mb-4 flex justify-between ">
+                  <div className="text-xl  h-xl mb-4 flex justify-between ">
                     <div className="flex text-[16px] items-center"> {/* Aligns first word to the left */}
                       <span className="font-bold ">Total Return</span>
                     </div>
