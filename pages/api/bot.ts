@@ -38,15 +38,18 @@ app.get('/api/bot', (req, res) => {
     // Add a new volume every minute (60000 milliseconds)
     setInterval(trackVolume, 60000);
 
-    // get the time 48 hours ago
-    var currentDate = new Date();
-    currentDate.setHours(currentDate.getHours() - 48); // Subtract 48 hours
-
 
     let pad = function (number: number): string {
       return (number < 10 ? '0' : '') + number.toString();
     }
 
+
+
+    //-----------------------------------------------------   
+    // - get all news withiin the past 24 hours
+    // - If news is relevant and bullish, save the ticker symbol.
+    //-----------------------------------------------------   
+    let stocksWithNews: any;
     let yesterdayDate = new Date();
     yesterdayDate.setDate(yesterdayDate.getDate() - 1);
 
@@ -57,11 +60,7 @@ app.get('/api/bot', (req, res) => {
       + pad(yesterdayDate.getUTCHours())
       + pad(yesterdayDate.getUTCMinutes());
 
-    //newsStartTime = '20230812T0130'
     //console.log('time from: ' + timeFrom)
-    // get news sentiment data for ticker
-    //var timeFrom = '20220410T0130' // ... your logic here;
-
 
     const axios = require('axios');
     var url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&time_from=${newsStartTime}&apikey=Y9TTQONCEK13TRG9`;
@@ -75,23 +74,30 @@ app.get('/api/bot', (req, res) => {
         const newsData = res.data;
         news = res.data;
         if (newsData && newsData.feed) {
-          let len = Math.min(2, newsData.feed.length);
+          let len = Math.min(20, newsData.feed.length);
           for (let i = 0; i < len; i++) {
             //news = newsData.feed[i]
+            let sc = newsData.feed[i].overall_sentiment_score;
 
-            let item = newsData.feed[i];
-            if (item.overall_sentiment_score >= 0.35)
-              newsSentiment = 1;
-            else if (item.overall_sentiment_score <= -0.15)
-              newsSentiment = 0
-            else
-              newsSentiment = 0.5;
+
+            if (0.15 <= sc) {
+              for (let j = 0; j < newsData.feed[i].ticker_sentiment.length; j++) {
+                if (parseFloat(newsData.feed[i].ticker_sentiment[j].relevance_score) > 0.4) {
+                  //console.log(ticker_sentiment[i])
+                  stocksWithNews.push(newsData.feed[i].ticker_sentiment[j].ticker)
+                  console.log(newsData.feed[i].ticker_sentiment[j].ticker)
+
+                }
+              }
+
+            }
           }
         }
       }
-    })().catch((error) => console.error(error));
+    }
+    )().catch((error) => console.error(error));
 
-    //console.log(news);
+    //
 
     //res.write("news: " + JSON.stringify(news) + "\n\n");
 
