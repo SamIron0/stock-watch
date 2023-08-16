@@ -14,7 +14,7 @@ interface Props extends PropsWithChildren {
 export default function Layout({ children, meta: pageMeta }: Props) {
   const router = useRouter();
   const meta = {
-    title: 'Next.js Subscription Starter',
+    title: 'Trading bot',
     description: 'Brought to you by Vercel, Stripe, and Supabase.',
     cardImage: '/og.png',
     ...pageMeta
@@ -25,7 +25,6 @@ export default function Layout({ children, meta: pageMeta }: Props) {
       <Head>
         <title>{meta.title}</title>
         <meta name="robots" content="follow, index" />
-        <link href="/favicon.ico" rel="shortcut icon" />
         <meta content={meta.description} name="description" />
         <meta
           property="og:url"

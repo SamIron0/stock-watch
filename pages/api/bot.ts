@@ -14,12 +14,21 @@ app.use(cors());
 
 
 app.get('/api/bot', (req, res) => {
-  let status = false;
+  let stockStatus = 'red';
+  var newsSentiment = 1;
+  var vwap: number;
+  var ema9: number;
+  var ema200: number;
+  var hod;
+  let resistanceLevels: number[] = [];
 
   const ticker = req.query.stock;
   let currentVolume = 1000
   if (ticker) {
-    var sentiment;
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
 
     let volumes: number[] = [];
     const trackVolume = () => {
@@ -38,52 +47,54 @@ app.get('/api/bot', (req, res) => {
       return (number < 10 ? '0' : '') + number.toString();
     }
 
-    var timeFrom = currentDate.getUTCFullYear().toString()
-      + pad(currentDate.getUTCMonth() + 1) // Months are 0-indexed so we need to add 1
-      + pad(currentDate.getUTCDate())
+    let yesterdayDate = new Date();
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+
+    let newsStartTime = yesterdayDate.getUTCFullYear().toString()
+      + pad(yesterdayDate.getUTCMonth() + 1) // Months are 0-indexed so we need to add 1
+      + pad(yesterdayDate.getUTCDate())
       + 'T'
-      + pad(currentDate.getUTCHours())
-      + pad(currentDate.getUTCMinutes());
-    timeFrom = '20220410T0130'
+      + pad(yesterdayDate.getUTCHours())
+      + pad(yesterdayDate.getUTCMinutes());
+
+    //newsStartTime = '20230812T0130'
     //console.log('time from: ' + timeFrom)
     // get news sentiment data for ticker
     //var timeFrom = '20220410T0130' // ... your logic here;
-    var url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${ticker}&apikey=Y9TTQONCEK13TRG9}&limit=3`;
-    var request = require('request');
 
-    request.get({
-      url: url,
-      json: true,
-      headers: { 'User-Agent': 'request' }
-    }, (err: any, res: { statusCode: number; }, data: any) => {
-      if (err) {
-        console.log('Error:', err);
-      } else if (res.statusCode !== 200) {
-        console.log('Status:', res.statusCode);
+
+    const axios = require('axios');
+    var url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&time_from=${newsStartTime}&apikey=Y9TTQONCEK13TRG9`;
+    var news: any;
+
+    (async function getNews() {
+      const res = await axios.get(url, { headers: { 'User-Agent': 'request' } });
+      if (res.status !== 200) {
+        console.log('Status:', res.status);
       } else {
-        // data is successfully parsed as a JSON object:
-        // ensure data is an array before attempting to use Array methods
-        console.log(data);
+        const newsData = res.data;
+        news = res.data;
+        if (newsData && newsData.feed) {
+          let len = Math.min(2, newsData.feed.length);
+          for (let i = 0; i < len; i++) {
+            //news = newsData.feed[i]
 
-        if (Array.isArray(data)) {
-          console.log(data);
-
-          data.forEach((item: any) => {
-
-            var sentiment;
+            let item = newsData.feed[i];
             if (item.overall_sentiment_score >= 0.35)
-              sentiment = 1;
+              newsSentiment = 1;
             else if (item.overall_sentiment_score <= -0.15)
-              sentiment = 0;
+              newsSentiment = 0
             else
-              sentiment = 0.5;
-          });
+              newsSentiment = 0.5;
+          }
         }
-
       }
-    })
+    })().catch((error) => console.error(error));
 
-    // console.log(sentiment);
+    //console.log(news);
+
+    //res.write("news: " + JSON.stringify(news) + "\n\n");
+
 
     // prepare to read for yahoo finance live stock data
     const root = protobuf.loadSync('./YPricingData.proto');
@@ -91,10 +102,6 @@ app.get('/api/bot', (req, res) => {
 
     //open webscket connection with finance live stock data provider
     const wsc = new ws('wss://streamer.finance.yahoo.com');
-
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
 
 
     wsc.on('open', () => {
@@ -108,33 +115,49 @@ app.get('/api/bot', (req, res) => {
 
     wsc.on('message', (data: string) => {
       const decodedData: any = Yaticker.decode(Buffer.from(data as string, 'base64'));
-      const result = { name: ticker, price: decodedData.price.toFixed(4) };
+      //console.log(decodedData)
+      // no open stock position
+      //if (!stockActive) {
 
-      //call python script
+      //call python script to get indicators from yahoo
       const { exec } = require('child_process');
       const argsArray = volumes; // Replace with your array
       const stockTicker = ticker;
-      exec(`python buy.py ${stockTicker}`, (error: { message: any; }, stdout: any, stderr: any) => {
+      exec(`python indicators.py ${stockTicker} `, (error: { message: any; }, stdout: any, stderr: any) => {
         if (error) {
           console.error(`Error: ${error.message}`);
           return;
         }
-        // get output from python and set buy status
+        // get vwap from python and set buy status
         console.log(`Python Output: ${stdout}`);
-        if (stdout) {
-          // buy
-
-          status = true
+        try {
+          //const indicators = JSON.parse(stdout);
+          //const vwap = indicators['vwap'];
+          //const ema9 = indicators['ema9'];
+          //const ema200 = indicators['ema200'];
+        } catch (e) {
+          console.error('Error parsing python output', e);
         }
       });
 
       // stream price to frontend
+      const result = { name: ticker, price: decodedData.price.toFixed(4), status: stockStatus, news: news };
+
+
+      // if indicators checkout, then proceed
+      if ((result.price) > vwap && (result.price > ema200) && (result.price > ema9) && (newsSentiment == 1)) {
+        stockStatus = 'yellow'
+
+
+      }
+
       res.write("data: " + JSON.stringify(result) + "\n\n");
+
     });
   }
   else {
     // unmount stock
-    status = false
+    // status = false
   }
 
 });
