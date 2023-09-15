@@ -103,12 +103,10 @@ const Card = () => {
       // This is the stock data
 
       const data = JSON.parse(event.data);
-      //console.log(data);
+      //console.log(data.news);
       setStockData1(data);
-      if (stockData1.news) {
-        console.log('news valid');
-        setNews1(stockData1.news);
-      }
+      setNews1(stockData1.news);
+      console.log(news1[0]);
     };
     return () => eventSource.close();
   }, [ticker1]);
