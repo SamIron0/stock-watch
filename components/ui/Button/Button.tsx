@@ -2,7 +2,6 @@ import cn from 'classnames';
 import React, { forwardRef, useRef, ButtonHTMLAttributes } from 'react';
 import { mergeRefs } from 'react-merge-refs';
 
-import LoadingDots from '@/components/ui/LoadingDots';
 
 import styles from './Button.module.css';
 
@@ -51,11 +50,7 @@ const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
       {...rest}
     >
       {children}
-      {loading && (
-        <i className="pl-2 m-0 flex">
-          <LoadingDots />
-        </i>
-      )}
+      
     </Component>
   );
 });
