@@ -19,6 +19,7 @@ app.get('/api/bot', (req, res) => {
   var vwap: number;
   var ema9: number;
   var ema200: number;
+  var numberOfRuns = 0;
   var hod;
   let resistanceLevels: number[] = [];
 
@@ -46,10 +47,11 @@ app.get('/api/bot', (req, res) => {
 
 
     //-----------------------------------------------------   
-    // - get all news withiin the past 24 hours
+    // - get all news within the past 24 hours
     // - If news is relevant and bullish, save the ticker symbol.
     //-----------------------------------------------------   
-    let stocksWithNews: any;
+    let stocksWithNews: any[] = [];
+    let importantStocksNews: any[] = [];
     let yesterdayDate = new Date();
     yesterdayDate.setDate(yesterdayDate.getDate() - 1);
 
@@ -85,8 +87,11 @@ app.get('/api/bot', (req, res) => {
                 if (parseFloat(newsData.feed[i].ticker_sentiment[j].relevance_score) > 0.4) {
                   //console.log(ticker_sentiment[i])
                   stocksWithNews.push(newsData.feed[i].ticker_sentiment[j].ticker)
-                  console.log(newsData.feed[i].ticker_sentiment[j].ticker)
-
+                  importantStocksNews.push({
+                    ticker: newsData.feed[i].ticker,
+                    title: newsData.feed[i].title,
+                    url: newsData.feed[i].url,
+                  })
                 }
               }
 
@@ -94,12 +99,10 @@ app.get('/api/bot', (req, res) => {
           }
         }
       }
+      //console.log(stocksWithNews);
     }
     )().catch((error) => console.error(error));
 
-    //
-
-    //res.write("news: " + JSON.stringify(news) + "\n\n");
 
 
     // prepare to read for yahoo finance live stock data
@@ -134,29 +137,26 @@ app.get('/api/bot', (req, res) => {
           console.error(`Error: ${error.message}`);
           return;
         }
-        // get vwap from python and set buy status
-        console.log(`Python Output: ${stdout}`);
         try {
-          //const indicators = JSON.parse(stdout);
-          //const vwap = indicators['vwap'];
-          //const ema9 = indicators['ema9'];
-          //const ema200 = indicators['ema200'];
+          const indicators = JSON.parse(stdout);
+          const vwap = indicators['vwap'];
+          const ema9 = indicators['ema9'];
+          const ema200 = indicators['ema200'];
+          //console.log(vwap)
         } catch (e) {
           console.error('Error parsing python output', e);
         }
       });
 
-      // stream price to frontend
-      const result = { name: ticker, price: decodedData.price.toFixed(4), status: stockStatus, news: news };
-
 
       // if indicators checkout, then proceed
-      if ((result.price) > vwap && (result.price > ema200) && (result.price > ema9) && (newsSentiment == 1)) {
+      if (!((decodedData.price.toFixed(4)) > vwap && (decodedData.price.toFixed(4) > ema200) && (decodedData.price.toFixed(4) > ema9) && (newsSentiment == 1))) {
         stockStatus = 'yellow'
-
-
       }
 
+      // stream price to frontend
+      const result = { name: ticker, price: decodedData.price.toFixed(4), status: stockStatus, news: numberOfRuns == 0 ? importantStocksNews : []};
+      numberOfRuns=numberOfRuns+1
       res.write("data: " + JSON.stringify(result) + "\n\n");
 
     });

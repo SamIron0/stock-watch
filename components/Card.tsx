@@ -6,7 +6,7 @@ type StockData = {
   name: string,
   price: string,
   status: string,
-  news: string
+  news: any
 };
 
 interface Props {
@@ -43,10 +43,10 @@ const Card = () => {
   const [ticker2, setTicker2] = useState<string>("");
   const [ticker3, setTicker3] = useState<string>("");
   const [ticker4, setTicker4] = useState<string>("");
-  const [stockData1, setStockData1] = useState<StockData>({ name: '', price: '', status: '', news: '' });
-  const [stockData2, setStockData2] = useState<StockData>({ name: '', price: '', status: '', news: '' });
-  const [stockData3, setStockData3] = useState<StockData>({ name: '', price: '', status: '', news: '' });
-  const [stockData4, setStockData4] = useState<StockData>({ name: '', price: '', status: '', news: '' });
+  const [stockData1, setStockData1] = useState<StockData>({ name: '', price: '', status: '', news: [] });
+  const [stockData2, setStockData2] = useState<StockData>({ name: '', price: '', status: '', news: [] });
+  const [stockData3, setStockData3] = useState<StockData>({ name: '', price: '', status: '', news: [] });
+  const [stockData4, setStockData4] = useState<StockData>({ name: '', price: '', status: '', news: [] });
   const [inputValue1, setInputValue1] = useState("")
   const [inputValue2, setInputValue2] = useState("")
   const [inputValue3, setInputValue3] = useState("")
@@ -71,8 +71,8 @@ const Card = () => {
 
   useEffect(() => {
     const eventSource = new EventSource(`/api/bot/?stock=${ticker1}`)
-    eventSource.onopen = (event) => console.log('connection opened', event);
-    eventSource.onerror = (event) => console.log('connection errored', event);
+    eventSource.onopen = (event) => console.log('connection opened');
+    eventSource.onerror = (event) => console.log('connection errored');
 
 
     eventSource.onmessage = (event) => {
@@ -124,6 +124,11 @@ const Card = () => {
     return () => eventSource.close();
   }, [ticker4]);
 
+  let run = 1 //first run
+  var news;
+  if (run == 1) {
+    news = stockData1.news
+  }
   return (
     <section>
       <div className="sm:flex px-4  sm:flex-col h-screen sm:align-center">
@@ -415,18 +420,12 @@ const Card = () => {
             </div>
           </div>
           <div className="border border-zinc-700	w-full p rounded-md m-auto my-8">
-            {news1}
-          </div><div className="border border-zinc-700	w-full p rounded-md m-auto my-8">
-            {news2}
-          </div><div className="border border-zinc-700	w-full p rounded-md m-auto my-8">
-            {news3}
-          </div><div className="border border-zinc-700	w-full p rounded-md m-auto my-8">
-            {news4}
+            <p>{stockData1?.name}</p>
+            <p>{news?.[0]?.title}</p>
+            <p>{news?.[0]?.url}</p>
           </div>
         </div>
-
       </div>
-
 
     </section >
   );

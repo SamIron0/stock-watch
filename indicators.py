@@ -1,3 +1,4 @@
+import json
 from tradingview_ta import TA_Handler, Interval
 import sys
 import yfinance as yf
@@ -10,9 +11,9 @@ exchange = stock_info['exchange']
 
 # print("Hello, World!")
 handler = TA_Handler(
-    symbol=ticker_symbol,
+    symbol="TSLA",
     screener="america",
-    exchange=exchange,
+    exchange="NASDAQ",
     interval=Interval.INTERVAL_1_MINUTE,
 )
 
@@ -20,10 +21,10 @@ handler.add_indicators(["VWAP"])
 
 result = {
     "vwap": handler.get_analysis().indicators["VWAP"],
-    #"ema200": handler.get_analysis().indicators["EMA200"],
-    #"ema10": handler.get_analysis().indicators["EMA10"],
+    "ema200": handler.get_analysis().indicators["EMA200"],
+    "ema10": handler.get_analysis().indicators["EMA10"]
 }
 
 # Get exchange of Apple Inc.
-print(exchange)
-print(result)
+#print(handler.get_analysis().indicators["VWAP"])
+print(json.dumps(result))
