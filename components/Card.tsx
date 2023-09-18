@@ -443,45 +443,59 @@ const Card = () => {
               </PlanCard>
             </div>
           </div>
-          <div className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 mx-4">
-            {news1?.map((item: any, index: any) => (
-              <div className="" key={index}>
-                <h2 className="pb-1">{item.title}</h2>
-                <a href={item.url} className="pb-3">
-                  {item.url}
-                </a>{' '}
-              </div>
-            ))}
-          </div>
-          <div className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 mx-4">
-            {news2?.map((item: any, index: any) => (
-              <div className="" key={index}>
-                <h2 className="pb-1">{item.title}</h2>
-                <a href={item.url} className="pb-3">
-                  {item.url}
-                </a>{' '}
-              </div>
-            ))}
-          </div>
-          <div className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 mx-4">
-            {news3?.map((item: any, index: any) => (
-              <div className="" key={index}>
-                <h2 className="pb-1">{item.title}</h2>
-                <a href={item.url} className="pb-3">
-                  {item.url}
-                </a>{' '}
-              </div>
-            ))}
-          </div>
-          <div className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 mx-4">
-            {news4?.map((item: any, index: any) => (
-              <div className="" key={index}>
-                <h2 className="pb-1">{item.title}</h2>
-                <a href={item.url} className="pb-3">
-                  {item.url}
-                </a>
-              </div>
-            ))}
+          <div className="px-4">
+            <div>
+              {news1?.map((item: any, index: any) => (
+                <div
+                  key={index}
+                  className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 "
+                >
+                  <h2 className="pb-1">{item.title}</h2>
+                  <a href={item.url} className="pb-3">
+                    {item.url}
+                  </a>{' '}
+                </div>
+              ))}
+            </div>
+            <div>
+              {news2?.map((item: any, index: any) => (
+                <div
+                  className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8"
+                  key={index}
+                >
+                  <h2 className="pb-1">{item.title}</h2>
+                  <a href={item.url} className="pb-3">
+                    {item.url}
+                  </a>{' '}
+                </div>
+              ))}
+            </div>
+            <div>
+              {news3?.map((item: any, index: any) => (
+                <div
+                  className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 "
+                  key={index}
+                >
+                  <h2 className="pb-1">{item.title}</h2>
+                  <a href={item.url} className="pb-3">
+                    {item.url}
+                  </a>{' '}
+                </div>
+              ))}
+            </div>
+            <div className="">
+              {news4?.map((item: any, index: any) => (
+                <div
+                  className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 "
+                  key={index}
+                >
+                  <h2 className="pb-1">{item.title}</h2>
+                  <a href={item.url} className="pb-3">
+                    {item.url}
+                  </a>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
