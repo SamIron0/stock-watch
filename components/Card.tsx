@@ -1,12 +1,12 @@
 import protobuf from 'protobufjs';
-import React, { useMemo, useState, useEffect, ReactNode } from 'react';
+import React, { useMemo, useState, useEffect, ReactNode, useRef } from 'react';
 import axios from 'axios';
 
 type StockData = {
   name: string;
   price: string;
   status: string;
-  news: any;
+  news: [];
 };
 
 interface Props {
@@ -77,9 +77,9 @@ const Card = () => {
   const [inputValue3, setInputValue3] = useState('');
   const [inputValue4, setInputValue4] = useState('');
   const [news1, setNews1] = useState([]);
-  const [news2, setNews2] = useState<NewsType[]>([]);
-  const [news3, setNews3] = useState<NewsType[]>([]);
-  const [news4, setNews4] = useState<NewsType[]>([]);
+  const [news2, setNews2] = useState([]);
+  const [news3, setNews3] = useState([]);
+  const [news4, setNews4] = useState([]);
   const handleInputChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue1(event.target.value);
   };
@@ -98,15 +98,13 @@ const Card = () => {
     eventSource.onopen = (event) => console.log('connection opened');
     eventSource.onerror = (event) => console.log('connection errored');
 
-    eventSource.onmessage = (event) => {
+    eventSource.onmessage = async (event) => {
       //console.log('incoming message');
       // This is the stock data
 
-      const data = JSON.parse(event.data);
+      const data = await JSON.parse(event.data);
       //console.log(data.news);
       setStockData1(data);
-      setNews1(stockData1.news);
-      console.log(stockData1.news);
     };
     return () => eventSource.close();
   }, [ticker1]);
@@ -146,19 +144,33 @@ const Card = () => {
     return () => eventSource.close();
   }, [ticker4]);
 
-  /*
-  if (stockData2?.news?.length != 0) {
-    setNews2(stockData2.news);
-  }
+  const firstUpdate = useRef(true);
 
-  if (stockData3?.news?.length != 0) {
-    setNews3(stockData3.news);
-  }
+  useEffect(() => {
+    if (firstUpdate.current && stockData1.news.length > 0) {
+      setNews1(stockData1.news);
+      firstUpdate.current = false;
+    }
+  }, [stockData1]);
+  useEffect(() => {
+    if (firstUpdate.current && stockData2.news.length > 0) {
+      setNews2(stockData2.news);
+      firstUpdate.current = false;
+    }
+  }, [stockData2]);
+  useEffect(() => {
+    if (firstUpdate.current && stockData3.news.length > 0) {
+      setNews3(stockData3.news);
+      firstUpdate.current = false;
+    }
+  }, [stockData3]);
+  useEffect(() => {
+    if (firstUpdate.current && stockData4.news.length > 0) {
+      setNews4(stockData4.news);
+      firstUpdate.current = false;
+    }
+  }, [stockData4]);
 
-  if (stockData4?.news?.length != 0) {
-    setNews4(stockData4.news);
-  }
-*/
   return (
     <section>
       <div className="sm:flex px-4  sm:flex-col h-screen sm:align-center">
@@ -179,7 +191,7 @@ const Card = () => {
                   <div className="flex items-start justify-between  text-black flex-col sm:flex-row sm:items-center">
                     <button
                       onClick={() => setTicker1(inputValue1)}
-                      className="group rounded-full px-4 py-1 text-[13px]  font-semibold transition-all flex items-center justify-center bg-white text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
+                      className="group rounded-full px-4 py-1 text-[13px]  font-semibold transition-all flex items-center justify-center bg-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
                     >
                       <p className="text-black"></p>ADD
                     </button>
@@ -229,56 +241,6 @@ const Card = () => {
                       <span className="">{stockData1.price}</span>
                     </div>
                   </div>
-                  <div className="text-xl  h-xl mb-4 flex justify-between ">
-                    <div className="flex   text-[16px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold">Average price</span>
-                    </div>
-                    <div className="flex text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className=""></span>
-                    </div>
-                  </div>
-                  <div className="text-xl h-md h-xl mb-4 flex justify-between ">
-                    <div className="flex  text-[16px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold">% of trading account</span>
-                    </div>
-                    <div className="flex text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className=""></span>
-                    </div>
-                  </div>
-                  <div className="text-xl h-md mb-4 flex justify-between ">
-                    <div className="flex text-[15px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold">Today's return</span>
-                    </div>
-                    <div className="flex  text-[16px] text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className=""></span>
-                    </div>
-                  </div>
-                  <div className="text-xl  h-xl mb-4 flex justify-between ">
-                    <div className="flex text-[16px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold ">Total Return</span>
-                    </div>
-                    <div className="flex  text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className="">
-                        ${parseInt(stockData1.price) / 100 - 5}
-                      </span>
-                    </div>
-                  </div>
                 </div>
               </PlanCard>
               <PlanCard
@@ -325,7 +287,7 @@ const Card = () => {
                   <div className="flex items-start justify-between  text-black flex-col sm:flex-row sm:items-center">
                     <button
                       onClick={() => setTicker2(inputValue2)}
-                      className="group rounded-full px-4 py-1 text-[13px]  font-semibold transition-all flex items-center justify-center bg-white text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
+                      className="group rounded-full px-4 py-1 text-[13px]  font-semibold transition-all flex items-center justify-center bg-white  hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
                     >
                       <p className="text-black"></p>ADD
                     </button>
@@ -343,54 +305,6 @@ const Card = () => {
                       {' '}
                       {/* Aligns second word to the right */}
                       <span className="">{stockData2.price}</span>
-                    </div>
-                  </div>
-                  <div className="text-xl  h-xl mb-4 flex justify-between ">
-                    <div className="flex   text-[16px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold">Average price</span>
-                    </div>
-                    <div className="flex text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className=""></span>
-                    </div>
-                  </div>
-                  <div className="text-xl h-md h-xl mb-4 flex justify-between ">
-                    <div className="flex  text-[16px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold">% of trading account</span>
-                    </div>
-                    <div className="flex text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className=""></span>
-                    </div>
-                  </div>
-                  <div className="text-xl h-md mb-4 flex justify-between ">
-                    <div className="flex text-[15px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold">Today's return</span>
-                    </div>
-                    <div className="flex  text-[16px] text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className=""></span>
-                    </div>
-                  </div>
-                  <div className="text-xl  h-xl mb-4 flex justify-between ">
-                    <div className="flex text-[16px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold ">Total Return</span>
-                    </div>
-                    <div className="flex  text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className="">$0</span>
                     </div>
                   </div>
                 </div>
@@ -439,7 +353,7 @@ const Card = () => {
                   <div className="flex items-start justify-between  text-black flex-col sm:flex-row sm:items-center">
                     <button
                       onClick={() => setTicker3(inputValue3)}
-                      className="group rounded-full px-4 py-1 text-[13px]  font-semibold transition-all flex items-center justify-center bg-white text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
+                      className="group rounded-full px-4 py-1 text-[13px]  font-semibold transition-all flex items-center justify-center bg-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
                     >
                       <p className="text-black"></p>ADD
                     </button>
@@ -457,54 +371,6 @@ const Card = () => {
                       {' '}
                       {/* Aligns second word to the right */}
                       <span className="">{stockData3.price}</span>
-                    </div>
-                  </div>
-                  <div className="text-xl  h-xl mb-4 flex justify-between ">
-                    <div className="flex   text-[16px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold">Average price</span>
-                    </div>
-                    <div className="flex text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className=""></span>
-                    </div>
-                  </div>
-                  <div className="text-xl h-md h-xl mb-4 flex justify-between ">
-                    <div className="flex  text-[16px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold">% of trading account</span>
-                    </div>
-                    <div className="flex text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className=""></span>
-                    </div>
-                  </div>
-                  <div className="text-xl h-md mb-4 flex justify-between ">
-                    <div className="flex text-[15px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold">Today's return</span>
-                    </div>
-                    <div className="flex  text-[16px] text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className=""></span>
-                    </div>
-                  </div>
-                  <div className="text-xl  h-xl mb-4 flex justify-between ">
-                    <div className="flex text-[16px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold ">Total Return</span>
-                    </div>
-                    <div className="flex  text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className="">$0</span>
                     </div>
                   </div>
                 </div>
@@ -553,7 +419,7 @@ const Card = () => {
                   <div className="flex items-start justify-between  text-black flex-col sm:flex-row sm:items-center">
                     <button
                       onClick={() => setTicker4(inputValue4)}
-                      className="group rounded-full px-4 py-1 text-[13px]  font-semibold transition-all flex items-center justify-center bg-white text-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
+                      className="group rounded-full px-4 py-1 text-[13px]  font-semibold transition-all flex items-center justify-center bg-white hover:[linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #0D2247] no-underline flex gap-x-2  active:scale-95 scale-100 duration-75"
                     >
                       <p className="text-black"></p>ADD
                     </button>
@@ -573,68 +439,49 @@ const Card = () => {
                       <span className="">{stockData4.price}</span>
                     </div>
                   </div>
-                  <div className="text-xl  h-xl mb-4 flex justify-between ">
-                    <div className="flex   text-[16px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold">Average price</span>
-                    </div>
-                    <div className="flex text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className=""></span>
-                    </div>
-                  </div>
-                  <div className="text-xl h-md h-xl mb-4 flex justify-between ">
-                    <div className="flex  text-[16px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold">% of trading account</span>
-                    </div>
-                    <div className="flex text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className=""></span>
-                    </div>
-                  </div>
-                  <div className="text-xl h-md mb-4 flex justify-between ">
-                    <div className="flex text-[15px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold">Today's return</span>
-                    </div>
-                    <div className="flex  text-[16px] text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className=""></span>
-                    </div>
-                  </div>
-                  <div className="text-xl  h-xl mb-4 flex justify-between ">
-                    <div className="flex text-[16px] items-center">
-                      {' '}
-                      {/* Aligns first word to the left */}
-                      <span className="font-bold ">Total Return</span>
-                    </div>
-                    <div className="flex  text-[15px] items-center">
-                      {' '}
-                      {/* Aligns second word to the right */}
-                      <span className="">$0</span>
-                    </div>
-                  </div>
                 </div>
               </PlanCard>
             </div>
           </div>
-          <div className="border border-zinc-700	w-full p rounded-md m-auto my-8">
-            {
-              news1?.length != 0 && <>hello</>
-              /* news1?.map((item: any, index: any) => (
-                <div className="" key={index}>
-                  <p className="pb-2">{item.title}</p>
-                  <p className="pb-2">{item.url}</p>
-                </div>
-              ))*/
-            }
+          <div className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 mx-4">
+            {news1?.map((item: any, index: any) => (
+              <div className="" key={index}>
+                <h2 className="pb-1">{item.title}</h2>
+                <a href={item.url} className="pb-3">
+                  {item.url}
+                </a>{' '}
+              </div>
+            ))}
+          </div>
+          <div className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 mx-4">
+            {news2?.map((item: any, index: any) => (
+              <div className="" key={index}>
+                <h2 className="pb-1">{item.title}</h2>
+                <a href={item.url} className="pb-3">
+                  {item.url}
+                </a>{' '}
+              </div>
+            ))}
+          </div>
+          <div className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 mx-4">
+            {news3?.map((item: any, index: any) => (
+              <div className="" key={index}>
+                <h2 className="pb-1">{item.title}</h2>
+                <a href={item.url} className="pb-3">
+                  {item.url}
+                </a>{' '}
+              </div>
+            ))}
+          </div>
+          <div className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 mx-4">
+            {news4?.map((item: any, index: any) => (
+              <div className="" key={index}>
+                <h2 className="pb-1">{item.title}</h2>
+                <a href={item.url} className="pb-3">
+                  {item.url}
+                </a>
+              </div>
+            ))}
           </div>
         </div>
       </div>
