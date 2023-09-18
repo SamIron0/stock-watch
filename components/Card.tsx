@@ -106,7 +106,7 @@ const Card = () => {
       //console.log(data.news);
       setStockData1(data);
       setNews1(stockData1.news);
-      console.log(news1[0]);
+      console.log(stockData1.news);
     };
     return () => eventSource.close();
   }, [ticker1]);
