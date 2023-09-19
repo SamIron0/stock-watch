@@ -2,9 +2,6 @@ import { PropsWithChildren } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import Navbar from '@/components/ui/Navbar';
-
-
 interface Props extends PropsWithChildren {
 }
 
@@ -12,8 +9,8 @@ interface Props extends PropsWithChildren {
 export default function Layout({ children }: Props) {
   const router = useRouter();
   const meta = {
-    title: 'Trading bot',
-    description: 'Retrieve and display stock prices to screen',
+    title: 'Stock Watch',
+    description: 'Retrieve and display rea; time stock prices and news to user',
     
   };
 
@@ -36,7 +33,6 @@ export default function Layout({ children }: Props) {
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.description} />
       </Head>
-      <Navbar />
       <main id="skip">{children}</main>
     </>
   );
