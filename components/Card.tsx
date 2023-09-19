@@ -267,8 +267,8 @@ const Card = () => {
                     <div
                       style={{
                         backgroundColor: 'yellow',
-                        width: '5px',
-                        height: '5px',
+                        width: '20px',
+                        height: '20px',
                         borderRadius: '50%'
                       }}
                     ></div>
@@ -276,8 +276,8 @@ const Card = () => {
                     <div
                       style={{
                         backgroundColor: 'green',
-                        width: '5px',
-                        height: '5px',
+                        width: '20px',
+                        height: '20px',
                         borderRadius: '50%'
                       }}
                     ></div>
@@ -333,8 +333,8 @@ const Card = () => {
                     <div
                       style={{
                         backgroundColor: 'green',
-                        width: '5px',
-                        height: '5px',
+                        width: '20px',
+                        height: '20px',
                         borderRadius: '50%'
                       }}
                     ></div>
@@ -342,8 +342,8 @@ const Card = () => {
                     <div
                       style={{
                         backgroundColor: 'yellow',
-                        width: '5px',
-                        height: '5px',
+                        width: '20px',
+                        height: '20px',
                         borderRadius: '50%'
                       }}
                     ></div>
@@ -399,8 +399,8 @@ const Card = () => {
                     <div
                       style={{
                         backgroundColor: 'green',
-                        width: '5px',
-                        height: '5px',
+                        width: '20px',
+                        height: '20px',
                         borderRadius: '50%'
                       }}
                     ></div>
@@ -408,8 +408,8 @@ const Card = () => {
                     <div
                       style={{
                         backgroundColor: 'yellow',
-                        width: '5px',
-                        height: '5px',
+                        width: '20px',
+                        height: '20px',
                         borderRadius: '50%'
                       }}
                     ></div>
@@ -443,45 +443,62 @@ const Card = () => {
               </PlanCard>
             </div>
           </div>
-          <div className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 mx-4">
-            {news1?.map((item: any, index: any) => (
-              <div className="" key={index}>
-                <h2 className="pb-1">{item.title}</h2>
-                <a href={item.url} className="pb-3">
-                  {item.url}
-                </a>{' '}
-              </div>
-            ))}
+          <div className="flex justify-center pt-4">
+            <h1 className="text-4xl font-bold">RELEVANT NEWS</h1>
           </div>
-          <div className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 mx-4">
-            {news2?.map((item: any, index: any) => (
-              <div className="" key={index}>
-                <h2 className="pb-1">{item.title}</h2>
-                <a href={item.url} className="pb-3">
-                  {item.url}
-                </a>{' '}
-              </div>
-            ))}
-          </div>
-          <div className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 mx-4">
-            {news3?.map((item: any, index: any) => (
-              <div className="" key={index}>
-                <h2 className="pb-1">{item.title}</h2>
-                <a href={item.url} className="pb-3">
-                  {item.url}
-                </a>{' '}
-              </div>
-            ))}
-          </div>
-          <div className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 mx-4">
-            {news4?.map((item: any, index: any) => (
-              <div className="" key={index}>
-                <h2 className="pb-1">{item.title}</h2>
-                <a href={item.url} className="pb-3">
-                  {item.url}
-                </a>
-              </div>
-            ))}
+          <div className="px-4">
+            <div>
+              {news1?.map((item: any, index: any) => (
+                <div
+                  key={index}
+                  className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 "
+                >
+                  <h2 className="text-xl pb-1">{item.title}</h2>
+                  <a className="text-blue-600 pb-3" href={item.url}>
+                    {item.url}
+                  </a>{' '}
+                </div>
+              ))}
+            </div>
+            <div>
+              {news2?.map((item: any, index: any) => (
+                <div
+                  className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8"
+                  key={index}
+                >
+                  <h2 className="text-xl pb-1">{item.title}</h2>
+                  <a href={item.url} className="text-blue-600 pb-3">
+                    {item.url}
+                  </a>{' '}
+                </div>
+              ))}
+            </div>
+            <div>
+              {news3?.map((item: any, index: any) => (
+                <div
+                  className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 "
+                  key={index}
+                >
+                  <h2 className="text-xl pb-1">{item.title}</h2>
+                  <a href={item.url} className="text-blue-600 pb-3">
+                    {item.url}
+                  </a>{' '}
+                </div>
+              ))}
+            </div>
+            <div className="">
+              {news4?.map((item: any, index: any) => (
+                <div
+                  className="border border-zinc-700	w-full p-2 rounded-md m-auto my-8 "
+                  key={index}
+                >
+                  <h2 className="text-xl pb-1">{item.title}</h2>
+                  <a href={item.url} className="text-blue-600 pb-3">
+                    {item.url}
+                  </a>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
