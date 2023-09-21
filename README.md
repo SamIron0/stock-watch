@@ -12,4 +12,4 @@ This app leverages powerful toolsExpress.js, WebSockets, and Protobuf.js to prov
 
 ## Demo
 
-[![Screenshot of demo](./public/demo.png)]
+![Screenshot of demo](./public/demo.png)
