@@ -1,13 +1,15 @@
 # Stock watch
-## Features
-- Secure user management and authentication with [Supabase]
-- Powerful data access & management tooling on top of PostgreSQL with [Supabase]
-- Open AI api integration for knowledge work
-- Responsive Tailwind CSS design
 
+This app leverages powerful toolsExpress.js, WebSockets, and Protobuf.js to provide swift and accurate access to live stock prices and news, outpacing even Yahoo Finance's display speed.
+
+## Features
+
+- Express.js web application framework.
+- WebSocket for real-time bi-directional communication.
+- Relevant news sentiment analysis using Alphavantage's API.
+- Live stock data fetched from Yahoo Finance using WebSockets and Protobuf.js for efficient data serialization.
+- CORS middleware to handle cross-origin requests.
 
 ## Demo
-[![Screenshot of demo](./public/demo2.png)](https://fitpalai.com/)
-[![Screenshot of demo](./public/demo3.png)](https://fitpalai.com/)
-[![Screenshot of demo](./public/demo4.png)](https://fitpalai.com/)
-[![Screenshot of demo](./public/demo5.png)](https://fitpalai.com/)
+
+[![Screenshot of demo](./public/demo.png)]
