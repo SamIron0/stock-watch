@@ -61,7 +61,7 @@ app.get('/api/bot', (req, res) => {
     //console.log('time from: ' + timeFrom)
 
     const axios = require('axios');
-    var url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&time_from=${newsStartTime}&apikey=Y9TTQONCEK13TRG9`;
+    var url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&time_from=${newsStartTime}&apikey=${process.env.ALPHAVANTAGE_KEY}`;
     var news: any;
 
     (async function getNews() {
