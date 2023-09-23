@@ -1,19 +1,19 @@
-'use strict';
+"use strict";
 
-import express from 'express';
-import ws from 'ws';
-import protobuf from 'protobufjs';
+import express from "express";
+import ws from "ws";
+import protobuf from "protobufjs";
 //import { Timer } from 'set-interval';
 
 const app = express();
 const port = 4000;
-const cors = require('cors');
+const cors = require("cors");
 
 // Use cors middleware
 app.use(cors());
 
-app.get('/api/bot', (req, res) => {
-  let stockStatus = 'red';
+app.get("/api/bot", (req, res) => {
+  let stockStatus = "red";
   var newsSentiment = 1;
   var vwap: number;
   var ema9: number;
@@ -25,9 +25,9 @@ app.get('/api/bot', (req, res) => {
   const ticker = req.query.stock;
   let currentVolume = 1000;
   if (ticker) {
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
 
     let volumes: number[] = [];
     const trackVolume = () => {
@@ -38,7 +38,7 @@ app.get('/api/bot', (req, res) => {
     setInterval(trackVolume, 60000);
 
     let pad = function (number: number): string {
-      return (number < 10 ? '0' : '') + number.toString();
+      return (number < 10 ? "0" : "") + number.toString();
     };
 
     //-----------------------------------------------------
@@ -54,22 +54,22 @@ app.get('/api/bot', (req, res) => {
       yesterdayDate.getUTCFullYear().toString() +
       pad(yesterdayDate.getUTCMonth() + 1) + // Months are 0-indexed so we need to add 1
       pad(yesterdayDate.getUTCDate()) +
-      'T' +
+      "T" +
       pad(yesterdayDate.getUTCHours()) +
       pad(yesterdayDate.getUTCMinutes());
 
     //console.log('time from: ' + timeFrom)
 
-    const axios = require('axios');
+    const axios = require("axios");
     var url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&time_from=${newsStartTime}&apikey=Y9TTQONCEK13TRG9`;
     var news: any;
 
     (async function getNews() {
       const res = await axios.get(url, {
-        headers: { 'User-Agent': 'request' }
+        headers: { "User-Agent": "request" },
       });
       if (res.status !== 200) {
-        console.log('Status:', res.status);
+        console.log("Status:", res.status);
       } else {
         const newsData = res.data;
         news = res.data;
@@ -98,7 +98,7 @@ app.get('/api/bot', (req, res) => {
                   importantStocksNews.push({
                     ticker: newsData.feed[i].ticker,
                     title: newsData.feed[i].title,
-                    url: newsData.feed[i].url
+                    url: newsData.feed[i].url,
                   });
                 }
               }
@@ -110,31 +110,39 @@ app.get('/api/bot', (req, res) => {
     })().catch((error) => console.error(error));
 
     // prepare to read for yahoo finance live stock data
-    const root = protobuf.loadSync('./YPricingData.proto');
-    const Yaticker = root.lookupType('yaticker');
+    const root = protobuf.loadSync("./YPricingData.proto");
+    const Yaticker = root.lookupType("yaticker");
 
     //open webscket connection with finance live stock data provider
-    const wsc = new ws('wss://streamer.finance.yahoo.com');
+    const wsc = new ws("wss://streamer.finance.yahoo.com");
 
-    wsc.on('open', () => {
-      console.log('connected');
-      wsc.send(JSON.stringify({ subscribe: [ticker] }));
+    wsc.on("open", () => {
+      console.log("connected");
+      if (ticker) {
+        wsc.send(JSON.stringify({ subscribe: [ticker] }));
+      } else {
+        const result = {
+          news: numberOfRuns == 0 ? importantStocksNews : [],
+        };
+        numberOfRuns = numberOfRuns + 1;
+        res.write("data: " + JSON.stringify(result) + "\n\n");
+      }
     });
 
-    wsc.on('close', () => {
-      console.log('disconnected');
+    wsc.on("close", () => {
+      console.log("disconnected");
     });
 
-    wsc.on('message', (data: string) => {
+    wsc.on("message", (data: string) => {
       const decodedData: any = Yaticker.decode(
-        Buffer.from(data as string, 'base64')
+        Buffer.from(data as string, "base64")
       );
       //console.log(decodedData)
       // no open stock position
       //if (!stockActive) {
 
       //call python script to get indicators from yahoo
-      const { exec } = require('child_process');
+      const { exec } = require("child_process");
       const argsArray = volumes; // Replace with your array
       const stockTicker = ticker;
       exec(
@@ -146,12 +154,12 @@ app.get('/api/bot', (req, res) => {
           }
           try {
             const indicators = JSON.parse(stdout);
-            const vwap = indicators['vwap'];
-            const ema9 = indicators['ema9'];
-            const ema200 = indicators['ema200'];
+            const vwap = indicators["vwap"];
+            const ema9 = indicators["ema9"];
+            const ema200 = indicators["ema200"];
             //console.log(vwap)
           } catch (e) {
-            console.error('Error parsing python output', e);
+            console.error("Error parsing python output", e);
           }
         }
       );
@@ -165,7 +173,7 @@ app.get('/api/bot', (req, res) => {
           newsSentiment == 1
         )
       ) {
-        stockStatus = 'green';
+        stockStatus = "green";
       }
 
       // stream price to frontend
@@ -173,10 +181,10 @@ app.get('/api/bot', (req, res) => {
         name: ticker,
         price: decodedData.price.toFixed(4),
         status: stockStatus,
-        news: numberOfRuns == 0 ? importantStocksNews : []
+        news: numberOfRuns == 0 ? importantStocksNews : [],
       };
       numberOfRuns = numberOfRuns + 1;
-      res.write('data: ' + JSON.stringify(result) + '\n\n');
+      res.write("data: " + JSON.stringify(result) + "\n\n");
     });
   } else {
     // unmount stock
@@ -189,7 +197,7 @@ app.listen(port, () => {
 });
 
 app.use((req, res) => {
-  res.status(405).json({ message: 'Method Not Allowed' });
+  res.status(405).json({ message: "Method Not Allowed" });
 });
 
 export default app;

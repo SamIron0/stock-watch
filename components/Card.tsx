@@ -1,6 +1,6 @@
-import protobuf from 'protobufjs';
-import React, { useMemo, useState, useEffect, ReactNode, useRef } from 'react';
-import axios from 'axios';
+import protobuf from "protobufjs";
+import React, { useMemo, useState, useEffect, ReactNode, useRef } from "react";
+import axios from "axios";
 
 type StockData = {
   name: string;
@@ -44,38 +44,39 @@ function PlanCard({ title, price, footer, children, status }: Props) {
 
 const Card = () => {
   const [ws, setWs] = useState<WebSocket>();
-  const [ticker1, setTicker1] = useState<string>('');
-  const [ticker2, setTicker2] = useState<string>('');
-  const [ticker3, setTicker3] = useState<string>('');
-  const [ticker4, setTicker4] = useState<string>('');
+  const [ticker1, setTicker1] = useState<string>("");
+  const [ticker2, setTicker2] = useState<string>("");
+  const [ticker3, setTicker3] = useState<string>("");
+  const [ticker4, setTicker4] = useState<string>("");
   const [stockData1, setStockData1] = useState<StockData>({
-    name: '',
-    price: '',
-    status: '',
-    news: []
+    name: "",
+    price: "",
+    status: "",
+    news: [],
   });
   const [stockData2, setStockData2] = useState<StockData>({
-    name: '',
-    price: '',
-    status: '',
-    news: []
+    name: "",
+    price: "",
+    status: "",
+    news: [],
   });
   const [stockData3, setStockData3] = useState<StockData>({
-    name: '',
-    price: '',
-    status: '',
-    news: []
+    name: "",
+    price: "",
+    status: "",
+    news: [],
   });
   const [stockData4, setStockData4] = useState<StockData>({
-    name: '',
-    price: '',
-    status: '',
-    news: []
+    name: "",
+    price: "",
+    status: "",
+    news: [],
   });
-  const [inputValue1, setInputValue1] = useState('');
-  const [inputValue2, setInputValue2] = useState('');
-  const [inputValue3, setInputValue3] = useState('');
-  const [inputValue4, setInputValue4] = useState('');
+  const [inputValue1, setInputValue1] = useState("");
+  const [inputValue2, setInputValue2] = useState("");
+  const [inputValue3, setInputValue3] = useState("");
+  const [inputValue4, setInputValue4] = useState("");
+  const [news, setNews] = useState([]);
   const [news1, setNews1] = useState([]);
   const [news2, setNews2] = useState([]);
   const [news3, setNews3] = useState([]);
@@ -93,10 +94,19 @@ const Card = () => {
     setInputValue4(event.target.value);
   };
 
+  const eventSource = new EventSource(`/api/bot/`);
+  eventSource.onopen = (event) => {
+    console.log("connection opened");
+
+    const data = await JSON.parse(event.data);
+    setNews(data.news);
+  };
+  eventSource.close();
+
   useEffect(() => {
     const eventSource = new EventSource(`/api/bot/?stock=${ticker1}`);
-    eventSource.onopen = (event) => console.log('connection opened');
-    eventSource.onerror = (event) => console.log('connection errored');
+    eventSource.onopen = (event) => console.log("connection opened");
+    eventSource.onerror = (event) => console.log("connection errored");
 
     eventSource.onmessage = async (event) => {
       //console.log('incoming message');
@@ -111,8 +121,8 @@ const Card = () => {
 
   useEffect(() => {
     const eventSource = new EventSource(`/api/bot/?stock=${ticker2}`);
-    eventSource.onopen = (event) => console.log('connection opened', event);
-    eventSource.onerror = (event) => console.log('connection errored', event);
+    eventSource.onopen = (event) => console.log("connection opened", event);
+    eventSource.onerror = (event) => console.log("connection errored", event);
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -123,8 +133,8 @@ const Card = () => {
 
   useEffect(() => {
     const eventSource = new EventSource(`/api/bot/?stock=${ticker3}`);
-    eventSource.onopen = (event) => console.log('connection opened', event);
-    eventSource.onerror = (event) => console.log('connection errored', event);
+    eventSource.onopen = (event) => console.log("connection opened", event);
+    eventSource.onerror = (event) => console.log("connection errored", event);
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -134,8 +144,8 @@ const Card = () => {
   }, [ticker3]);
   useEffect(() => {
     const eventSource = new EventSource(`/api/bot/?stock=${ticker4}`);
-    eventSource.onopen = (event) => console.log('connection opened', event);
-    eventSource.onerror = (event) => console.log('connection errored', event);
+    eventSource.onopen = (event) => console.log("connection opened", event);
+    eventSource.onerror = (event) => console.log("connection errored", event);
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -198,31 +208,31 @@ const Card = () => {
                   </div>
                 }
                 status={
-                  stockData1.status === 'red' ? (
+                  stockData1.status === "red" ? (
                     <div
                       style={{
-                        backgroundColor: 'red',
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%'
+                        backgroundColor: "red",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
                       }}
                     ></div>
-                  ) : stockData1.status === 'yellow' ? (
+                  ) : stockData1.status === "yellow" ? (
                     <div
                       style={{
-                        backgroundColor: 'yellow',
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%'
+                        backgroundColor: "yellow",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
                       }}
                     ></div>
-                  ) : stockData1.status === 'green' ? (
+                  ) : stockData1.status === "green" ? (
                     <div
                       style={{
-                        backgroundColor: 'green',
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%'
+                        backgroundColor: "green",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
                       }}
                     ></div>
                   ) : null
@@ -231,12 +241,12 @@ const Card = () => {
                 <div className="w-[400px]">
                   <div className="text-xl mt-6 h-xl mb-4 flex justify-between ">
                     <div className="flex text-[16px] items-center">
-                      {' '}
+                      {" "}
                       {/* Aligns first word to the left */}
                       <span className="font-bold">Price</span>
                     </div>
                     <div className="flex  text-[15px] items-center">
-                      {' '}
+                      {" "}
                       {/* Aligns second word to the right */}
                       <span className="">{stockData1.price}</span>
                     </div>
@@ -254,31 +264,31 @@ const Card = () => {
                   />
                 }
                 status={
-                  stockData2.status === 'red' ? (
+                  stockData2.status === "red" ? (
                     <div
                       style={{
-                        backgroundColor: 'red',
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%'
+                        backgroundColor: "red",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
                       }}
                     ></div>
-                  ) : stockData2.status === 'yellow' ? (
+                  ) : stockData2.status === "yellow" ? (
                     <div
                       style={{
-                        backgroundColor: 'yellow',
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%'
+                        backgroundColor: "yellow",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
                       }}
                     ></div>
-                  ) : stockData2.status === 'green' ? (
+                  ) : stockData2.status === "green" ? (
                     <div
                       style={{
-                        backgroundColor: 'green',
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%'
+                        backgroundColor: "green",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
                       }}
                     ></div>
                   ) : null
@@ -297,12 +307,12 @@ const Card = () => {
                 <div className="w-[400px]">
                   <div className="text-xl mt-6 h-xl mb-4 flex justify-between ">
                     <div className="flex text-[16px] items-center">
-                      {' '}
+                      {" "}
                       {/* Aligns first word to the left */}
                       <span className="font-bold">Price</span>
                     </div>
                     <div className="flex  text-[15px] items-center">
-                      {' '}
+                      {" "}
                       {/* Aligns second word to the right */}
                       <span className="">{stockData2.price}</span>
                     </div>
@@ -320,31 +330,31 @@ const Card = () => {
                   />
                 }
                 status={
-                  stockData3.status === 'red' ? (
+                  stockData3.status === "red" ? (
                     <div
                       style={{
-                        backgroundColor: 'red',
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%'
+                        backgroundColor: "red",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
                       }}
                     ></div>
-                  ) : stockData3.status === 'green' ? (
+                  ) : stockData3.status === "green" ? (
                     <div
                       style={{
-                        backgroundColor: 'green',
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%'
+                        backgroundColor: "green",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
                       }}
                     ></div>
-                  ) : stockData3.status === 'yellow' ? (
+                  ) : stockData3.status === "yellow" ? (
                     <div
                       style={{
-                        backgroundColor: 'yellow',
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%'
+                        backgroundColor: "yellow",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
                       }}
                     ></div>
                   ) : null
@@ -363,12 +373,12 @@ const Card = () => {
                 <div className="w-[400px]">
                   <div className="text-xl mt-6 h-xl mb-4 flex justify-between ">
                     <div className="flex text-[16px] items-center">
-                      {' '}
+                      {" "}
                       {/* Aligns first word to the left */}
                       <span className="font-bold">Price</span>
                     </div>
                     <div className="flex  text-[15px] items-center">
-                      {' '}
+                      {" "}
                       {/* Aligns second word to the right */}
                       <span className="">{stockData3.price}</span>
                     </div>
@@ -386,31 +396,31 @@ const Card = () => {
                   />
                 }
                 status={
-                  stockData3.status === 'red' ? (
+                  stockData3.status === "red" ? (
                     <div
                       style={{
-                        backgroundColor: 'red',
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%'
+                        backgroundColor: "red",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
                       }}
                     ></div>
-                  ) : stockData3.status === 'green' ? (
+                  ) : stockData3.status === "green" ? (
                     <div
                       style={{
-                        backgroundColor: 'green',
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%'
+                        backgroundColor: "green",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
                       }}
                     ></div>
-                  ) : stockData3.status === 'yellow' ? (
+                  ) : stockData3.status === "yellow" ? (
                     <div
                       style={{
-                        backgroundColor: 'yellow',
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%'
+                        backgroundColor: "yellow",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
                       }}
                     ></div>
                   ) : null
@@ -429,12 +439,12 @@ const Card = () => {
                 <div className="w-[400px]">
                   <div className="text-xl mt-6 h-xl mb-4 flex justify-between ">
                     <div className="flex text-[16px] items-center">
-                      {' '}
+                      {" "}
                       {/* Aligns first word to the left */}
                       <span className="font-bold">Price</span>
                     </div>
                     <div className="flex  text-[15px] items-center">
-                      {' '}
+                      {" "}
                       {/* Aligns second word to the right */}
                       <span className="">{stockData4.price}</span>
                     </div>
@@ -456,7 +466,7 @@ const Card = () => {
                   <h2 className="text-xl pb-1">{item.title}</h2>
                   <a className="text-blue-600 pb-3" href={item.url}>
                     {item.url}
-                  </a>{' '}
+                  </a>{" "}
                 </div>
               ))}
             </div>
@@ -469,7 +479,7 @@ const Card = () => {
                   <h2 className="text-xl pb-1">{item.title}</h2>
                   <a href={item.url} className="text-blue-600 pb-3">
                     {item.url}
-                  </a>{' '}
+                  </a>{" "}
                 </div>
               ))}
             </div>
@@ -482,7 +492,7 @@ const Card = () => {
                   <h2 className="text-xl pb-1">{item.title}</h2>
                   <a href={item.url} className="text-blue-600 pb-3">
                     {item.url}
-                  </a>{' '}
+                  </a>{" "}
                 </div>
               ))}
             </div>
