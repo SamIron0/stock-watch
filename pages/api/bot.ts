@@ -106,6 +106,7 @@ app.get("/api/bot", (req, res) => {
           }
         }
       }
+      
       //console.log(stocksWithNews);
     })().catch((error) => console.error(error));
 
